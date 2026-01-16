@@ -126,36 +126,6 @@
       }
     }
 
-    // Filters
-    .filters-tile {
-      padding: var(--spacing-05);
-
-      .filters-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: var(--spacing-04);
-
-        .tile-heading {
-          margin: 0;
-          font-size: var(--font-size-lg);
-          font-weight: var(--font-weight-semibold);
-          color: var(--text-primary);
-        }
-
-        .clear-filters-btn {
-          min-height: auto;
-          padding: var(--spacing-03);
-        }
-      }
-
-      .filters-content {
-        // Cascading filter button container
-        .faceted-filter-button {
-          width: 100%;
-        }
-      }
-    }
 
     // Legend
     .legend-tile {
@@ -271,10 +241,6 @@
       gap: var(--spacing-04);
       margin-top: 0;
 
-      .switcher-tile {
-        padding: var(--spacing-04);
-      }
-
       .stats-tile {
         padding: var(--spacing-04);
 
@@ -287,13 +253,6 @@
         }
       }
 
-      .filters-tile {
-        padding: var(--spacing-04);
-
-        .filters-content {
-          gap: var(--spacing-04);
-        }
-      }
 
       .legend-tile {
         padding: var(--spacing-04);

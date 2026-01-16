@@ -4,14 +4,12 @@ import {
   Grid,
   Column,
   Tile,
-  Button,
   Heading,
   RadioButtonGroup,
   RadioButton,
 } from '@carbon/react';
-import { Building, CarFront, Close } from '@carbon/icons-react';
+import { Building, CarFront } from '@carbon/icons-react';
 import MapView from '../../components/business/MapView';
-import FacetedFilterButton from '../../components/business/FacetedFilterButton';
 import { mockProperties, mockVehicles } from '../../data/businessMockData';
 import { formatCurrency } from '../../utils/businessHelpers';
 import './MapPage.scss';
@@ -25,267 +23,40 @@ export default function MapPage() {
 
   // State
   const [selectedAssetType, setSelectedAssetType] = useState('all');
-  const [selectedFilters, setSelectedFilters] = useState({
-    status: [],
-    type: [],
-    location: [],
-    propertyType: [],
-    vehicleType: [],
-    city: []
-  });
 
-  // Prepare facets with counts based on selected asset type
-  const facets = useMemo(() => {
-    const data = selectedAssetType === 'properties' ? mockProperties :
-                  selectedAssetType === 'vehicles' ? mockVehicles :
-                  [...mockProperties, ...mockVehicles];
-
-    if (selectedAssetType === 'properties') {
-      // Property facets
-      const statuses = {};
-      const types = {};
-      const cities = {};
-
-      mockProperties.forEach(p => {
-        statuses[p.status] = (statuses[p.status] || 0) + 1;
-        types[p.propertyType] = (types[p.propertyType] || 0) + 1;
-        cities[p.city] = (cities[p.city] || 0) + 1;
-      });
-
-      return [
-        {
-          key: 'status',
-          label: 'Status',
-          options: Object.entries(statuses).map(([value, count]) => ({
-            value,
-            label: value,
-            count
-          })).sort((a, b) => a.label.localeCompare(b.label))
-        },
-        {
-          key: 'type',
-          label: 'Property Type',
-          options: Object.entries(types).map(([value, count]) => ({
-            value,
-            label: value,
-            count
-          })).sort((a, b) => a.label.localeCompare(b.label))
-        },
-        {
-          key: 'location',
-          label: 'City',
-          options: Object.entries(cities).map(([value, count]) => ({
-            value,
-            label: value,
-            count
-          })).sort((a, b) => a.label.localeCompare(b.label))
-        }
-      ];
-    } else if (selectedAssetType === 'vehicles') {
-      // Vehicle facets
-      const statuses = {};
-      const types = {};
-      const departments = {};
-
-      mockVehicles.forEach(v => {
-        statuses[v.status] = (statuses[v.status] || 0) + 1;
-        types[v.vehicleType] = (types[v.vehicleType] || 0) + 1;
-        departments[v.department] = (departments[v.department] || 0) + 1;
-      });
-
-      return [
-        {
-          key: 'status',
-          label: 'Status',
-          options: Object.entries(statuses).map(([value, count]) => ({
-            value,
-            label: value,
-            count
-          })).sort((a, b) => a.label.localeCompare(b.label))
-        },
-        {
-          key: 'type',
-          label: 'Vehicle Type',
-          options: Object.entries(types).map(([value, count]) => ({
-            value,
-            label: value,
-            count
-          })).sort((a, b) => a.label.localeCompare(b.label))
-        },
-        {
-          key: 'location',
-          label: 'Department',
-          options: Object.entries(departments).map(([value, count]) => ({
-            value,
-            label: value,
-            count
-          })).sort((a, b) => a.label.localeCompare(b.label))
-        }
-      ];
-    } else {
-      // Combined facets (all assets)
-      const statuses = {};
-      const propertyTypes = {};
-      const vehicleTypes = {};
-      const cities = {};
-      const departments = {};
-
-      // Collect all property data
-      mockProperties.forEach(p => {
-        statuses[p.status] = (statuses[p.status] || 0) + 1;
-        propertyTypes[p.propertyType] = (propertyTypes[p.propertyType] || 0) + 1;
-        cities[p.city] = (cities[p.city] || 0) + 1;
-      });
-
-      // Collect all vehicle data
-      mockVehicles.forEach(v => {
-        statuses[v.status] = (statuses[v.status] || 0) + 1;
-        vehicleTypes[v.vehicleType] = (vehicleTypes[v.vehicleType] || 0) + 1;
-        departments[v.department] = (departments[v.department] || 0) + 1;
-      });
-
-      return [
-        {
-          key: 'status',
-          label: 'Status',
-          options: Object.entries(statuses).map(([value, count]) => ({
-            value,
-            label: value,
-            count
-          })).sort((a, b) => a.label.localeCompare(b.label))
-        },
-        {
-          key: 'propertyType',
-          label: 'Property Type',
-          options: Object.entries(propertyTypes).map(([value, count]) => ({
-            value,
-            label: value,
-            count
-          })).sort((a, b) => a.label.localeCompare(b.label))
-        },
-        {
-          key: 'vehicleType',
-          label: 'Vehicle Type',
-          options: Object.entries(vehicleTypes).map(([value, count]) => ({
-            value,
-            label: value,
-            count
-          })).sort((a, b) => a.label.localeCompare(b.label))
-        },
-        {
-          key: 'city',
-          label: 'City',
-          options: Object.entries(cities).map(([value, count]) => ({
-            value,
-            label: value,
-            count
-          })).sort((a, b) => a.label.localeCompare(b.label))
-        },
-        {
-          key: 'location',
-          label: 'Department',
-          options: Object.entries(departments).map(([value, count]) => ({
-            value,
-            label: value,
-            count
-          })).sort((a, b) => a.label.localeCompare(b.label))
-        }
-      ];
-    }
-  }, [selectedAssetType]);
-
-  // Filter properties
-  const filteredProperties = useMemo(() => {
-    return mockProperties.filter(property => {
-      const statusMatch = selectedFilters.status.length === 0 ||
-        selectedFilters.status.includes(property.status);
-      const typeMatch = selectedFilters.type.length === 0 ||
-        selectedFilters.type.includes(property.propertyType);
-      const locationMatch = selectedFilters.location.length === 0 ||
-        selectedFilters.location.includes(property.city);
-
-      // Additional filters for "all assets" mode
-      const propertyTypeMatch = selectedFilters.propertyType.length === 0 ||
-        selectedFilters.propertyType.includes(property.propertyType);
-      const cityMatch = selectedFilters.city.length === 0 ||
-        selectedFilters.city.includes(property.city);
-
-      return statusMatch && typeMatch && locationMatch && propertyTypeMatch && cityMatch;
-    });
-  }, [selectedFilters]);
-
-  // Filter vehicles
-  const filteredVehicles = useMemo(() => {
-    return mockVehicles.filter(vehicle => {
-      const statusMatch = selectedFilters.status.length === 0 ||
-        selectedFilters.status.includes(vehicle.status);
-      const typeMatch = selectedFilters.type.length === 0 ||
-        selectedFilters.type.includes(vehicle.vehicleType);
-      const locationMatch = selectedFilters.location.length === 0 ||
-        selectedFilters.location.includes(vehicle.department);
-
-      // Additional filters for "all assets" mode
-      const vehicleTypeMatch = selectedFilters.vehicleType.length === 0 ||
-        selectedFilters.vehicleType.includes(vehicle.vehicleType);
-
-      return statusMatch && typeMatch && locationMatch && vehicleTypeMatch;
-    });
-  }, [selectedFilters]);
+  // Show all properties and vehicles (no filtering)
+  const filteredProperties = mockProperties;
+  const filteredVehicles = mockVehicles;
 
   // Calculate summary stats
   const stats = useMemo(() => {
     if (selectedAssetType === 'properties') {
       return {
-        total: filteredProperties.length,
-        active: filteredProperties.filter(p => p.status === 'Active').length,
-        monthlyPremium: filteredProperties.reduce((sum, p) => sum + p.monthlyPremium, 0),
-        openClaims: filteredProperties.reduce((sum, p) => sum + p.openClaims, 0),
+        total: mockProperties.length,
+        active: mockProperties.filter(p => p.status === 'Active').length,
+        monthlyPremium: mockProperties.reduce((sum, p) => sum + p.monthlyPremium, 0),
+        openClaims: mockProperties.reduce((sum, p) => sum + p.openClaims, 0),
       };
     } else if (selectedAssetType === 'vehicles') {
       return {
-        total: filteredVehicles.length,
-        active: filteredVehicles.filter(v => v.status === 'Active').length,
-        monthlyPremium: filteredVehicles.reduce((sum, v) => sum + v.monthlyPremium, 0),
-        openClaims: filteredVehicles.reduce((sum, v) => sum + v.openClaims, 0),
+        total: mockVehicles.length,
+        active: mockVehicles.filter(v => v.status === 'Active').length,
+        monthlyPremium: mockVehicles.reduce((sum, v) => sum + v.monthlyPremium, 0),
+        openClaims: mockVehicles.reduce((sum, v) => sum + v.openClaims, 0),
       };
     } else {
       return {
-        total: filteredProperties.length + filteredVehicles.length,
-        active: filteredProperties.filter(p => p.status === 'Active').length + 
-                filteredVehicles.filter(v => v.status === 'Active').length,
-        monthlyPremium: filteredProperties.reduce((sum, p) => sum + p.monthlyPremium, 0) +
-                        filteredVehicles.reduce((sum, v) => sum + v.monthlyPremium, 0),
-        openClaims: filteredProperties.reduce((sum, p) => sum + p.openClaims, 0) +
-                    filteredVehicles.reduce((sum, v) => sum + v.openClaims, 0),
+        total: mockProperties.length + mockVehicles.length,
+        active: mockProperties.filter(p => p.status === 'Active').length +
+                mockVehicles.filter(v => v.status === 'Active').length,
+        monthlyPremium: mockProperties.reduce((sum, p) => sum + p.monthlyPremium, 0) +
+                        mockVehicles.reduce((sum, v) => sum + v.monthlyPremium, 0),
+        openClaims: mockProperties.reduce((sum, p) => sum + p.openClaims, 0) +
+                    mockVehicles.reduce((sum, v) => sum + v.openClaims, 0),
       };
     }
-  }, [selectedAssetType, filteredProperties, filteredVehicles]);
+  }, [selectedAssetType]);
 
-  // Handle clear filters
-  const handleClearFilters = () => {
-    setSelectedFilters({
-      status: [],
-      type: [],
-      location: [],
-      propertyType: [],
-      vehicleType: [],
-      city: []
-    });
-  };
-
-
-  // Count active filters
-  const activeFiltersCount = Object.values(selectedFilters).reduce(
-    (sum, values) => sum + values.length,
-    0
-  );
-
-  // Get filter label based on asset type
-  const filterLabel = selectedAssetType === 'properties' 
-    ? 'Filter Properties' 
-    : selectedAssetType === 'vehicles' 
-    ? 'Filter Vehicles' 
-    : 'Filter Assets';
 
   return (
     <Grid fullWidth className="map-page">
@@ -318,10 +89,7 @@ export default function MapPage() {
           <RadioButtonGroup
             name="asset-type"
             valueSelected={selectedAssetType}
-            onChange={(value) => {
-              setSelectedAssetType(value);
-              handleClearFilters();
-            }}
+            onChange={setSelectedAssetType}
             orientation="vertical"
             legendText="Asset Type"
           >
@@ -354,32 +122,6 @@ export default function MapPage() {
           </div>
         </Tile>
 
-        {/* Cascading Filter */}
-        <Tile className="filters-tile">
-          <div className="filters-header">
-            <Heading className="tile-heading">Filters</Heading>
-            {activeFiltersCount > 0 && (
-              <Button
-                kind="ghost"
-                size="sm"
-                renderIcon={Close}
-                onClick={handleClearFilters}
-                className="clear-filters-btn"
-              >
-                Clear ({activeFiltersCount})
-              </Button>
-            )}
-          </div>
-
-          <div className="filters-content">
-            <FacetedFilterButton
-              label={filterLabel}
-              facets={facets}
-              selectedFilters={selectedFilters}
-              onFiltersChange={setSelectedFilters}
-            />
-          </div>
-        </Tile>
 
         {/* Legend */}
         <Tile className="legend-tile">
