@@ -11,6 +11,7 @@ import ThemePreviewPage from "./pages/ThemePreviewPage";
 import ProgressIndicatorPreview from "./pages/ProgressIndicatorPreview";
 import BusinessComingSoon from "./pages/business/BusinessComingSoon";
 import BusinessDashboard from "./pages/business/BusinessDashboard";
+import BusinessMapPage from "./pages/business/BusinessMapPage";
 import PropertiesPage from "./pages/business/PropertiesPage";
 import PropertyDetailPage from "./pages/business/PropertyDetailPage";
 import AddPropertyPage from "./pages/business/AddPropertyPage";
@@ -42,7 +43,7 @@ export default function App() {
         <Route path="/business/fleet" element={<FleetPage />} />
         <Route path="/business/fleet/add" element={<AddVehiclePage />} />
         <Route path="/business/fleet/:vehicleId" element={<VehicleDetailPage />} />
-        <Route path="/business/map" element={<BusinessComingSoon />} />
+        <Route path="/business/map" element={<BusinessMapPage />} />
         <Route path="/business/claims" element={<BusinessComingSoon />} />
         <Route path="/business/payments" element={<BusinessComingSoon />} />
         <Route path="/business/file-claim" element={<FileClaimPage />} />

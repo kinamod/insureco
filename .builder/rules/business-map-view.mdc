@@ -1,0 +1,401 @@
+---
+description: Business Map View implementation guide
+globs: 
+  - src/pages/business/BusinessMapPage.jsx
+  - src/components/business/BusinessMap.jsx
+alwaysApply: false
+---
+
+# Business Map View
+
+## Overview
+
+The Business Map View provides an interactive map visualization of all business insurance assets, including commercial properties and fleet vehicles. This feature replaces the previous "Coming Soon" placeholder at `/business/map`.
+
+## Technology Stack
+
+- **Mapping Library**: Leaflet via `react-leaflet` v5.0.0
+- **Map Tiles**: OpenStreetMap (no API key required)
+- **UI Components**: Carbon Design System
+- **Styling**: SCSS with theme-aware design tokens
+
+## Component Architecture
+
+### BusinessMapPage (Page Component)
+
+**Location**: `src/pages/business/BusinessMapPage.jsx`
+
+**Purpose**: Page-level wrapper providing layout, filters, and data management
+
+**Key Features**:
+- Carbon Grid/Column responsive layout
+- Filter toggles to show/hide properties and vehicles
+- Legend showing asset types and counts
+- Info panel with usage instructions and asset summary
+- Navigation to detail pages on marker click
+
+**State Management**:
+
+const [showProperties, setShowProperties] = useState(true);
+const [showVehicles, setShowVehicles] = useState(true);
+```
+
+**Data Source**: 
+- `mockProperties` and `mockVehicles` from `src/data/businessMockData.js`
+- Properties: 12 assets with `lat` and `lng` properties
+- Vehicles: 30 assets with `lastKnownLocation: { lat, lng }`
+
+**Navigation**:
+- Property markers → `/business/properties/:propertyId`
+- Vehicle markers → `/business/fleet/:vehicleId`
+
+### BusinessMap (Map Component)
+
+**Location**: `src/components/business/BusinessMap.jsx`
+
+**Purpose**: Self-contained Leaflet map with markers and popups
+
+**Key Features**:
+- Leaflet MapContainer with OpenStreetMap tiles
+- Custom SVG markers for properties (red) and vehicles (blue)
+- Interactive popups with asset details and "View Details" button
+- Auto-fit bounds to show all visible markers
+- Theme-aware marker and popup styling
+
+**Props**:
+```jsx
+{
+  properties: Array<Property>,      // Properties to display
+  vehicles: Array<Vehicle>,          // Vehicles to display
+  onMarkerClick: Function,           // Callback: (asset, type) => void
+  initialCenter: [lat, lng],         // Default: [37.5, -121.5] (CA)
+  initialZoom: Number,               // Default: 7
+}
+```
+
+**Map Configuration**:
+- **Tiles**: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`
+- **Attribution**: OpenStreetMap contributors
+- **Initial View**: California center (lat: 37.5, lng: -121.5, zoom: 7)
+- **Auto-fit**: Bounds automatically adjust to show all markers
+- **Controls**: Zoom controls, attribution, scroll wheel zoom enabled
+
+**Custom Markers**:
+- Property icon: Red circle with building SVG (uses `--interactive-primary`)
+- Vehicle icon: Blue circle with truck SVG (IBM Blue 60/40 for light/dark)
+- Icons use `L.divIcon` for full CSS control
+- Hover effect: Scale up 1.1x with smooth transition
+
+## Styling Implementation
+
+### Theme-Aware Design Tokens
+
+**Files**:
+- `src/pages/business/BusinessMapPage.scss` - Page-level styles
+- `src/components/business/BusinessMap.scss` - Map component styles
+
+**Color Tokens Used**:
+```scss
+--background-primary      // Page and popup backgrounds
+--background-secondary    // Map container, stat cards
+--text-primary           // Headings, primary text
+--text-secondary         // Supporting text, labels
+--interactive-primary    // Property markers, brand red
+--border-subtle          // Borders, dividers
+```
+
+**Dark Mode Adaptations**:
+- Map tiles have brightness/contrast filter in dark mode
+- Popup backgrounds use `--background-primary` (adapts automatically)
+- Vehicle markers use lighter blue (#78a9ff) in dark mode
+- All text uses semantic tokens for proper contrast
+
+### Responsive Design
+
+**Breakpoints**:
+- **Desktop** (>1056px): Full layout, 600px map height
+- **Tablet** (672px-1056px): Stacked controls, 500px map height
+- **Mobile** (<672px): Vertical layout, 400px map height
+
+**Mobile Optimizations**:
+- Toggle controls stack vertically
+- Legend items wrap on small screens
+- Info panel grid becomes single column
+- Font sizes reduce slightly
+
+## Data Integration
+
+### Mock Data Structure
+
+**Properties** (`mockProperties`):
+```javascript
+{
+  id: 'PROP-2024-001',
+  name: 'Downtown Office Building',
+  address: '123 Main St, San Francisco, CA 94102',
+  propertyType: 'Office Building',
+  status: 'Active',
+  lat: 37.7749,
+  lng: -122.4194,
+  // ... other fields
+}
+```
+
+**Vehicles** (`mockVehicles`):
+```javascript
+{
+  id: 'VEH-2024-001',
+  make: 'Ford',
+  model: 'Transit',
+  year: 2022,
+  licensePlate: 'CA-7ABC123',
+  assignedDriver: 'John Martinez',
+  vehicleType: 'Cargo Van',
+  status: 'Active',
+  lastKnownLocation: { lat: 37.7849, lng: -122.4094 },
+  // ... other fields
+}
+```
+
+## User Interactions
+
+### Filter Controls
+
+**Properties Toggle**:
+- Label: "Show Properties"
+- Default: ON
+- Action: Shows/hides all 12 property markers
+
+**Vehicles Toggle**:
+- Label: "Show Vehicles"
+- Default: ON
+- Action: Shows/hides all 30 vehicle markers
+
+**Behavior**:
+- When both OFF: Displays "No assets to display" message
+- Asset count updates dynamically: "Showing X of Y assets"
+
+### Marker Interactions
+
+**Click Marker**:
+1. Popup opens with asset details
+2. "View Details" button navigates to detail page
+3. Popup has close button (X) in top-right
+
+**Popup Content - Properties**:
+- Name (e.g., "Downtown Office Building")
+- Address
+- Property type
+- Status badge (color-coded)
+- "View Details" button
+
+**Popup Content - Vehicles**:
+- Make/model/year (e.g., "2022 Ford Transit")
+- License plate
+- Assigned driver
+- Vehicle type
+- Status badge (color-coded)
+- "View Details" button
+
+### Map Controls
+
+- **Zoom**: +/- buttons (top-left)
+- **Pan**: Click and drag
+- **Scroll Wheel Zoom**: Enabled by default
+- **Attribution**: Bottom-right corner
+
+## Status Badges
+
+**Colors** (theme-aware):
+- `Active`: Green background, success color
+- `In Repair`: Yellow background, warning color
+- `Pending Renewal`: Blue background, info color
+- `Inactive`: Gray background, tertiary text
+
+## Accessibility Features
+
+### Keyboard Navigation
+- Tab through toggles and map controls
+- Enter/Space to activate toggles
+- Escape to close popups
+
+### Screen Reader Support
+- Toggle labels are descriptive
+- Map has `aria-label` or descriptive label
+- Popups announce asset details
+- Buttons have clear labels
+
+### Visual Accessibility
+- WCAG AA contrast ratios maintained in both themes
+- Focus indicators visible on all interactive elements
+- High contrast mode support (increased border widths)
+- Marker icons have drop shadows for visibility
+
+### Motion
+- Reduced motion support: Transitions disabled
+- Animations respect `prefers-reduced-motion`
+
+## Performance Considerations
+
+### Current Load
+- 12 properties + 30 vehicles = 42 markers total
+- Performance is excellent with this count
+- No clustering currently needed
+
+### Future Enhancements (If Needed)
+- Marker clustering for 100+ markers (use `react-leaflet-cluster`)
+- Virtualization for large datasets
+- Lazy loading of marker data
+
+## Routing
+
+**Route**: `/business/map`  
+**Component**: `BusinessMapPage`  
+**Updated in**: `src/App.jsx` (line 46)
+
+**Previous**: `<Route path="/business/map" element={<BusinessComingSoon />} />`  
+**Current**: `<Route path="/business/map" element={<BusinessMapPage />} />`
+
+## Testing Checklist
+
+### Functional Tests
+- ✅ Map renders with all markers
+- ✅ Property markers display correctly (12 total)
+- ✅ Vehicle markers display correctly (30 total)
+- ✅ Click marker opens popup with correct data
+- ✅ Click "View Details" navigates to correct detail page
+- ✅ Toggles show/hide assets correctly
+- ✅ Auto-fit bounds works on initial load
+- ✅ Legend displays correct counts
+
+### Theme Tests
+- ✅ Light mode (white theme): All elements visible and readable
+- ✅ Dark mode (g100 theme): All elements visible and readable
+- ✅ Map tiles visible in both themes
+- ✅ Popup backgrounds adapt to theme
+- ✅ Text maintains proper contrast in both themes
+- ✅ Markers clearly visible in both themes
+
+### Responsive Tests
+- ✅ Desktop (>1056px): Full layout
+- ✅ Tablet (672px-1056px): Controls stack, map adjusts
+- ✅ Mobile (<672px): Vertical layout, smaller map
+
+### Accessibility Tests
+- ✅ Keyboard navigation works
+- ✅ Screen reader announces elements
+- ✅ Focus indicators visible
+- ✅ Contrast ratios meet WCAG AA
+
+## Known Limitations
+
+1. **Static Data**: Currently uses mock data only (no live updates)
+2. **No Clustering**: Markers not clustered (fine for 42 assets)
+3. **No Search**: No search/filter by name or location
+4. **Single Map Style**: Only OpenStreetMap tiles (no satellite view)
+5. **No Routing**: No route display for vehicles
+
+## Future Enhancements
+
+### Phase 1: Real-Time Data
+- Integrate with backend API for live vehicle locations
+- WebSocket support for real-time updates
+- Last updated timestamp display
+
+### Phase 2: Advanced Filtering
+- Filter by property type (Office, Warehouse, etc.)
+- Filter by vehicle type (Cargo Van, Pickup, etc.)
+- Filter by status (Active, In Repair, etc.)
+- Search by name, address, or license plate
+
+### Phase 3: Clustering
+- Install `react-leaflet-cluster`
+- Group nearby markers when zoomed out
+- Show count badges on clusters
+- Expand clusters on click
+
+### Phase 4: Side Panel
+- Split view: Map + side panel
+- Show asset details without navigating away
+- Multi-select to compare assets
+- "View Full Details" link to detail page
+
+### Phase 5: Enhanced Mapping
+- Multiple tile provider options (Satellite, Terrain)
+- Dark mode optimized map tiles
+- Heat map layer for claim density
+- Route planning for vehicles
+
+## Related Documentation
+
+- **Component Structure**: `.builder/rules/component-structure.mdc`
+- **Design Tokens**: `.builder/rules/design-tokens.mdc`
+- **Theme Contrast**: `.builder/rules/theme-contrast-guidelines.mdc`
+- **Global CSS Usage**: `.builder/rules/global-css-usage.mdc`
+- **Business Mock Data**: `src/data/businessMockData.js`
+
+## Dependencies
+
+```json
+{
+  "react-leaflet": "^5.0.0",
+  "leaflet": "^1.9.4"
+}
+```
+
+**Installation**: `npm install react-leaflet leaflet`
+
+**Note**: Leaflet CSS must be imported in component:
+```jsx
+import 'leaflet/dist/leaflet.css';
+```
+
+## Troubleshooting
+
+### Issue: Markers don't appear
+**Solution**: Check that lat/lng coordinates are valid numbers and within bounds
+
+### Issue: Popup background is white in dark mode
+**Solution**: Ensure `.leaflet-popup-content-wrapper` uses `var(--background-primary)`
+
+### Issue: Map tiles not loading
+**Solution**: Check network connection, OpenStreetMap tiles are public and free
+
+### Issue: Default marker icons broken
+**Solution**: Check that Leaflet icon fix is applied (see `BusinessMap.jsx` lines 9-13)
+
+### Issue: Auto-fit bounds not working
+**Solution**: Ensure `FitBounds` component is rendered and markers array is not empty
+
+## Migration Notes
+
+**Previous Implementation**: BusinessComingSoon placeholder  
+**New Implementation**: Full-featured map with Leaflet
+
+**Breaking Changes**: None (new feature, not a replacement of existing functionality)
+
+**Required Updates**:
+1. Install dependencies: `react-leaflet`, `leaflet`
+2. Create `BusinessMap.jsx` and `BusinessMap.scss`
+3. Create `BusinessMapPage.jsx` and `BusinessMapPage.scss`
+4. Update `App.jsx` routing
+
+**No changes required** to:
+- Mock data structure
+- Property/Vehicle detail pages
+- Business dashboard navigation
+
+## Summary
+
+The Business Map View successfully replaces the "Coming Soon" placeholder with a fully functional, interactive map that:
+
+- ✅ Displays all 12 properties and 30 vehicles from mock data
+- ✅ Provides custom markers with theme-aware styling
+- ✅ Enables navigation to detail pages via marker clicks
+- ✅ Supports filter toggles to show/hide asset types
+- ✅ Works seamlessly in both light and dark themes
+- ✅ Maintains WCAG AA accessibility standards
+- ✅ Follows all global CSS and component structure guidelines
+- ✅ Is fully responsive across desktop, tablet, and mobile devices
+
+The implementation is production-ready and provides a solid foundation for future enhancements such as real-time tracking, advanced filtering, and clustering.

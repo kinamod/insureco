@@ -1,0 +1,327 @@
+@use '../../styles/tokens' as *;
+
+// =============================================================================
+// Business Map Page Styles
+// =============================================================================
+// Theme-aware styling for the map view page
+
+.business-map-page {
+  padding: var(--spacing-06) var(--spacing-05);
+  background: var(--background-primary);
+  min-height: 100vh;
+  
+  @media (max-width: 672px) {
+    padding: var(--spacing-05) var(--spacing-04);
+  }
+}
+
+// =============================================================================
+// Page Header
+// =============================================================================
+
+.map-page-header {
+  margin-bottom: var(--spacing-06);
+  
+  .page-title {
+    margin: 0 0 var(--spacing-03);
+    color: var(--text-primary);
+    font-size: var(--heading-h1-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.2;
+  }
+  
+  .page-description {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: var(--font-size-body-lg);
+    line-height: 1.5;
+    max-width: 800px;
+  }
+  
+  @media (max-width: 672px) {
+    margin-bottom: var(--spacing-05);
+    
+    .page-title {
+      font-size: var(--heading-h2-size);
+    }
+    
+    .page-description {
+      font-size: var(--font-size-body-md);
+    }
+  }
+}
+
+// =============================================================================
+// Map Controls
+// =============================================================================
+
+.map-controls {
+  margin-bottom: var(--spacing-05);
+  background: var(--background-primary);
+  border: 1px solid var(--border-subtle);
+  
+  .controls-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--spacing-06);
+    flex-wrap: wrap;
+    
+    @media (max-width: 1056px) {
+      flex-direction: column;
+      gap: var(--spacing-05);
+    }
+  }
+  
+  // Toggle Group
+  .toggle-group {
+    display: flex;
+    gap: var(--spacing-06);
+    align-items: center;
+    
+    @media (max-width: 672px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--spacing-04);
+      width: 100%;
+    }
+  }
+  
+  // Legend
+  .legend {
+    flex: 1;
+    min-width: 300px;
+    
+    @media (max-width: 1056px) {
+      width: 100%;
+    }
+    
+    .legend-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-03);
+      
+      .legend-title {
+        font-size: var(--font-size-body-md);
+        font-weight: var(--font-weight-semibold);
+        color: var(--text-primary);
+      }
+      
+      .asset-count {
+        font-size: var(--font-size-body-sm);
+        color: var(--text-secondary);
+      }
+    }
+    
+    .legend-items {
+      display: flex;
+      gap: var(--spacing-06);
+      flex-wrap: wrap;
+      
+      @media (max-width: 672px) {
+        gap: var(--spacing-04);
+      }
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-03);
+      transition: opacity 0.2s ease;
+      
+      &.disabled {
+        opacity: 0.4;
+      }
+      
+      .legend-icon {
+        flex-shrink: 0;
+        
+        &.property-icon {
+          color: var(--interactive-primary);
+        }
+        
+        &.vehicle-icon {
+          color: #0f62fe; // IBM Blue 60
+          
+          :root[data-carbon-theme="g90"] &,
+          :root[data-carbon-theme="g100"] & {
+            color: #78a9ff; // IBM Blue 40 (lighter for dark mode)
+          }
+        }
+      }
+      
+      .legend-label {
+        font-size: var(--font-size-body-sm);
+        color: var(--text-secondary);
+        white-space: nowrap;
+      }
+    }
+  }
+}
+
+// =============================================================================
+// Map Wrapper
+// =============================================================================
+
+.map-wrapper {
+  margin-bottom: var(--spacing-05);
+}
+
+// No assets message
+.no-assets-message {
+  padding: var(--spacing-09);
+  text-align: center;
+  background: var(--background-secondary);
+  border: 1px solid var(--border-subtle);
+  
+  .no-assets-content {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .no-assets-title {
+    margin: 0 0 var(--spacing-04);
+    font-size: var(--heading-h3-size);
+    color: var(--text-primary);
+  }
+  
+  .no-assets-text {
+    margin: 0;
+    font-size: var(--font-size-body-md);
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+}
+
+// =============================================================================
+// Info Panel
+// =============================================================================
+
+.info-panel {
+  background: var(--background-primary);
+  border: 1px solid var(--border-subtle);
+  
+  .info-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-07);
+    
+    @media (max-width: 1056px) {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-06);
+    }
+  }
+  
+  .info-section {
+    .info-title {
+      margin: 0 0 var(--spacing-04);
+      font-size: var(--font-size-body-lg);
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-primary);
+    }
+    
+    .info-list {
+      margin: 0;
+      padding-left: var(--spacing-05);
+      
+      li {
+        margin-bottom: var(--spacing-03);
+        font-size: var(--font-size-body-sm);
+        color: var(--text-secondary);
+        line-height: 1.5;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+  
+  // Summary Stats
+  .summary-stats {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-04);
+    
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-04);
+      background: var(--background-secondary);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      
+      .stat-label {
+        font-size: var(--font-size-body-sm);
+        color: var(--text-secondary);
+      }
+      
+      .stat-value {
+        font-size: var(--heading-h4-size);
+        font-weight: var(--font-weight-semibold);
+        color: var(--interactive-primary);
+      }
+    }
+  }
+}
+
+// =============================================================================
+// Responsive Adjustments
+// =============================================================================
+
+@media (max-width: 672px) {
+  .map-controls {
+    .controls-wrapper {
+      padding: var(--spacing-04);
+    }
+  }
+  
+  .info-panel {
+    .info-content {
+      gap: var(--spacing-05);
+    }
+    
+    .info-section {
+      .info-title {
+        font-size: var(--font-size-body-md);
+      }
+      
+      .info-list li {
+        font-size: 13px;
+      }
+    }
+  }
+}
+
+// =============================================================================
+// Accessibility
+// =============================================================================
+
+// Ensure focus states are visible
+.toggle-group {
+  .cds--toggle__switch:focus {
+    outline: 2px solid var(--interactive-primary);
+    outline-offset: 2px;
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .map-controls,
+  .info-panel {
+    border-width: 2px;
+  }
+  
+  .legend-item .legend-icon {
+    filter: contrast(1.2);
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .legend-item {
+    transition: none;
+  }
+}

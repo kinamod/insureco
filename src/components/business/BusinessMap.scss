@@ -1,0 +1,268 @@
+@use '../../styles/tokens' as *;
+
+// =============================================================================
+// Business Map Component Styles
+// =============================================================================
+// Theme-aware styling for Leaflet map and custom markers
+
+.business-map-container {
+  width: 100%;
+  height: 600px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  
+  // Theme-aware map background
+  background: var(--background-secondary);
+  
+  @media (max-width: 1056px) {
+    height: 500px;
+  }
+  
+  @media (max-width: 672px) {
+    height: 400px;
+  }
+}
+
+// =============================================================================
+// Leaflet Default Style Overrides (Theme Support)
+// =============================================================================
+
+.leaflet-container {
+  font-family: var(--font-family-sans);
+  
+  // Theme-aware tile filter for better visibility in dark mode
+  :root[data-carbon-theme="g90"] &,
+  :root[data-carbon-theme="g100"] & {
+    filter: brightness(0.7) contrast(1.2);
+  }
+}
+
+// Zoom controls styling
+.leaflet-control-zoom {
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-sm) !important;
+  overflow: hidden;
+  
+  a {
+    background: var(--background-primary) !important;
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    
+    &:hover {
+      background: var(--background-hover) !important;
+    }
+    
+    &:last-child {
+      border-bottom: none !important;
+    }
+  }
+}
+
+// Attribution styling
+.leaflet-control-attribution {
+  background: var(--background-primary) !important;
+  color: var(--text-secondary) !important;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  
+  a {
+    color: var(--interactive-primary) !important;
+    
+    &:hover {
+      color: var(--interactive-hover) !important;
+    }
+  }
+}
+
+// =============================================================================
+// Custom Markers
+// =============================================================================
+
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+  
+  svg {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    transition: transform 0.2s ease;
+  }
+  
+  &:hover svg {
+    transform: scale(1.1);
+  }
+}
+
+.property-marker {
+  svg circle {
+    fill: var(--interactive-primary);
+  }
+}
+
+.vehicle-marker {
+  svg circle {
+    fill: #0f62fe; // IBM Blue 60
+  }
+  
+  :root[data-carbon-theme="g90"] &,
+  :root[data-carbon-theme="g100"] & {
+    svg circle {
+      fill: #78a9ff; // IBM Blue 40 (lighter for dark mode)
+    }
+  }
+}
+
+// =============================================================================
+// Map Popups
+// =============================================================================
+
+.leaflet-popup-content-wrapper {
+  background: var(--background-primary) !important;
+  color: var(--text-primary) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--modal-shadow) !important;
+  padding: 0 !important;
+  border: 1px solid var(--border-subtle);
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  min-width: 220px;
+}
+
+.leaflet-popup-tip {
+  background: var(--background-primary) !important;
+  border: 1px solid var(--border-subtle);
+  border-top: none;
+  border-right: none;
+}
+
+// Popup arrow in dark mode
+:root[data-carbon-theme="g90"],
+:root[data-carbon-theme="g100"] {
+  .leaflet-popup-tip {
+    box-shadow: -1px 1px 0 rgba(255, 255, 255, 0.1);
+  }
+}
+
+.leaflet-popup-close-button {
+  color: var(--text-primary) !important;
+  font-size: 18px !important;
+  padding: 8px !important;
+  
+  &:hover {
+    color: var(--interactive-primary) !important;
+    background: var(--background-hover) !important;
+  }
+}
+
+// =============================================================================
+// Popup Content Styling
+// =============================================================================
+
+.popup-content {
+  padding: var(--spacing-05);
+  
+  .popup-title {
+    margin: 0 0 var(--spacing-03);
+    font-size: var(--font-size-body-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+  
+  .popup-address,
+  .popup-license,
+  .popup-driver,
+  .popup-type {
+    margin: var(--spacing-02) 0;
+    font-size: var(--font-size-body-sm);
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  
+  .popup-status {
+    margin: var(--spacing-03) 0;
+  }
+  
+  .popup-button {
+    margin-top: var(--spacing-04);
+    width: 100%;
+  }
+}
+
+// Status badges
+.status-badge {
+  display: inline-block;
+  padding: 2px var(--spacing-03);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  
+  &.status-active {
+    background: var(--color-success-background);
+    color: var(--color-success-text);
+  }
+  
+  &.status-in-repair {
+    background: var(--color-warning-background);
+    color: var(--color-warning-text);
+  }
+  
+  &.status-pending-renewal {
+    background: var(--color-info-background);
+    color: var(--color-info-text);
+  }
+  
+  &.status-inactive {
+    background: var(--background-tertiary);
+    color: var(--text-tertiary);
+  }
+}
+
+// =============================================================================
+// Loading State (optional future enhancement)
+// =============================================================================
+
+.map-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 600px;
+  background: var(--background-secondary);
+  border-radius: var(--radius-lg);
+  color: var(--text-secondary);
+  
+  @media (max-width: 1056px) {
+    height: 500px;
+  }
+  
+  @media (max-width: 672px) {
+    height: 400px;
+  }
+}
+
+// =============================================================================
+// Accessibility
+// =============================================================================
+
+// Ensure keyboard focus is visible on markers
+.leaflet-marker-icon:focus {
+  outline: 2px solid var(--interactive-primary);
+  outline-offset: 2px;
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .custom-marker svg {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  }
+  
+  .leaflet-popup-content-wrapper {
+    border-width: 2px !important;
+  }
+}
