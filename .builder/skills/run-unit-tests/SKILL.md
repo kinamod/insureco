@@ -34,28 +34,53 @@ npm run test:coverage
 ```
 src/__tests__/
 ├── setup.js                        # Global setup — imports jest-dom matchers
-├── __mocks__/                      # Reusable stubs (Carbon icons, Leaflet)
 ├── utils/
 │   └── businessHelpers.test.js     # Pure utility function tests
 ├── components/                     # Component-level tests
 └── pages/                          # Page/flow tests
 ```
 
-## Interpreting results
-
-A passing run looks like:
-```
-✓ src/__tests__/utils/businessHelpers.test.js > formatCurrency > formats a positive number
-Test Files  1 passed (1)
-     Tests  3 passed (3)
-```
-
-A failing run shows the assertion diff inline — check the `Expected` vs `Received` values.
-
 ## Writing new tests
 
 - Test files must match `**/*.{test,spec}.{js,jsx}`
 - Wrap React components in `<ThemeProvider>` from `src/contexts/ThemeContext.jsx`
 - Wrap routed pages in `<MemoryRouter>` from `react-router-dom`
-- Mock Carbon icons by creating a stub in `src/__tests__/__mocks__/carbon-icons.js`
+- Mock Carbon icons with inline `vi.mock('@carbon/icons-react', ...)`
 - CSS and SCSS imports are ignored automatically (`css: false` in `vite.config.js`)
+
+---
+
+## Report Format
+
+After running the tests, ALWAYS reply with a summary in this exact format:
+
+---
+
+### 🧪 Test Results
+
+| | |
+|---|---|
+| 🔢 **Total** | X tests across Y files |
+| ✅ **Passed** | X |
+| ❌ **Failed** | X |
+| 📊 **Pass rate** | X% |
+
+**Files:** `file1.test.js` ✅ · `file2.test.jsx` ✅ · `file3.test.jsx` ❌
+
+#### ❌ Failures
+
+**`path/to/file.test.js` › describe block › test name**
+- **Expected:** `"value"`
+- **Received:** `"other value"`
+- **Line:** `file.test.js:25`
+
+_(Repeat for each failure. If no failures, omit this section entirely.)_
+
+---
+
+Rules for the report:
+- Always show the report after running, even if all tests pass
+- Pass rate = (passed / total) × 100, rounded to nearest whole number
+- If all tests pass, replace the ❌ Failures section with: **🎉 All tests passed!**
+- For each failure, include the describe + test name, the Expected/Received diff, and the file:line
+- Keep failure explanations factual — what the assertion got vs what it wanted, not speculation
