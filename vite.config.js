@@ -12,6 +12,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text'],
+      reportOnFailure: true,
       include: ['src/**/*.{js,jsx}'],
       exclude: [
         'src/__tests__/**',
