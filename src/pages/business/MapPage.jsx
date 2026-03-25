@@ -5,18 +5,22 @@ import {
   Column,
   Tile,
   Heading,
-  RadioButtonGroup,
-  RadioButton,
 } from '@carbon/react';
-import { Building, CarFront } from '@carbon/icons-react';
+import { Building, CarFront, Earth } from '@carbon/icons-react';
 import MapView from '../../components/business/MapView';
 import { mockProperties, mockVehicles } from '../../data/businessMockData';
 import { formatCurrency } from '../../utils/businessHelpers';
 import './MapPage.scss';
 
+const FILTER_OPTIONS = [
+  { value: 'all', label: 'All', Icon: Earth },
+  { value: 'properties', label: 'Properties', Icon: Building },
+  { value: 'vehicles', label: 'Vehicles', Icon: CarFront },
+];
+
 /**
  * MapPage - Interactive map showing properties and fleet vehicles
- * Features: cascading filters, asset type switching, summary stats, clickable markers
+ * Features: overlay filter buttons, asset type switching, summary stats, clickable markers
  */
 export default function MapPage() {
   const navigate = useNavigate();
@@ -75,6 +79,21 @@ export default function MapPage() {
       {/* Map and Sidebar */}
       <Column lg={11} md={8} sm={4} className="map-column">
         <Tile className="map-tile">
+          {/* Filter overlay on map */}
+          <div className="map-filter-bar">
+            {FILTER_OPTIONS.map(({ value, label, Icon }) => (
+              <button
+                key={value}
+                className={`map-filter-btn${selectedAssetType === value ? ' map-filter-btn--active' : ''}`}
+                onClick={() => setSelectedAssetType(value)}
+                aria-pressed={selectedAssetType === value}
+              >
+                <Icon size={16} />
+                <span>{label}</span>
+              </button>
+            ))}
+          </div>
+
           <MapView
             properties={selectedAssetType === 'vehicles' ? [] : filteredProperties}
             vehicles={selectedAssetType === 'properties' ? [] : filteredVehicles}
@@ -84,21 +103,6 @@ export default function MapPage() {
       </Column>
 
       <Column lg={5} md={8} sm={4} className="sidebar-column">
-        {/* Asset Type Selection */}
-        <div className="asset-type-selection">
-          <RadioButtonGroup
-            name="asset-type"
-            valueSelected={selectedAssetType}
-            onChange={setSelectedAssetType}
-            orientation="vertical"
-            legendText="Asset Type"
-          >
-            <RadioButton id="asset-all" labelText="All Assets" value="all" />
-            <RadioButton id="asset-properties" labelText="Properties" value="properties" />
-            <RadioButton id="asset-vehicles" labelText="Vehicles" value="vehicles" />
-          </RadioButtonGroup>
-        </div>
-
         {/* Summary Stats */}
         <Tile className="stats-tile">
           <Heading className="tile-heading">Summary</Heading>
@@ -121,7 +125,6 @@ export default function MapPage() {
             </div>
           </div>
         </Tile>
-
 
         {/* Legend */}
         <Tile className="legend-tile">

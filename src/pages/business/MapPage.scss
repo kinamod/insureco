@@ -38,6 +38,7 @@
       height: calc(100vh - 280px);
       min-height: 500px;
       overflow: hidden;
+      position: relative;
 
       .map-view-container {
         height: 100%;
@@ -50,32 +51,64 @@
     }
   }
 
+  // Map Filter Bar (overlay on map)
+  .map-filter-bar {
+    position: absolute;
+    top: var(--spacing-05);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    gap: 2px;
+    background: var(--background-primary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 3px;
+    box-shadow: var(--shadow-03);
+  }
+
+  .map-filter-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-02);
+    padding: var(--spacing-02) var(--spacing-04);
+    border: none;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family-sans);
+    font-weight: var(--font-weight-regular);
+    cursor: pointer;
+    transition: all var(--duration-fast-02) var(--easing-standard);
+    white-space: nowrap;
+
+    svg {
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: var(--background-hover);
+      color: var(--text-primary);
+    }
+
+    &--active {
+      background: var(--interactive-primary);
+      color: var(--text-on-color);
+      font-weight: var(--font-weight-semibold);
+
+      &:hover {
+        background: var(--interactive-hover);
+        color: var(--text-on-color);
+      }
+    }
+  }
+
   // Sidebar Column
   .sidebar-column {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-05);
-
-    // Asset Type Selection
-    .asset-type-selection {
-      padding: var(--spacing-05);
-      background: var(--background-primary);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-
-      .cds--radio-button-group {
-        gap: var(--spacing-03);
-      }
-
-      .cds--radio-button__label {
-        font-size: var(--font-size-md);
-        padding-left: var(--spacing-06);
-      }
-
-      .cds--radio-button-wrapper:not(:last-child) {
-        margin-bottom: var(--spacing-03);
-      }
-    }
 
     // Summary Stats
     .stats-tile {
@@ -234,6 +267,15 @@
       .map-tile {
         height: 400px;
         min-height: 350px;
+      }
+    }
+
+    .map-filter-btn {
+      padding: var(--spacing-02) var(--spacing-03);
+      font-size: 12px;
+
+      span {
+        display: none;
       }
     }
 
