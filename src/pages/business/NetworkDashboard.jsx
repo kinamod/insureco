@@ -35,6 +35,16 @@ const areaChartData = [
   { group: 'Network Traffic', date: '2024-04-15', value: 390 },
   { group: 'Network Traffic', date: '2024-05-01', value: 600 },
   { group: 'Network Traffic', date: '2024-05-15', value: 580 },
+  { group: 'Credit Usage', date: '2024-01-01', value: 180 },
+  { group: 'Credit Usage', date: '2024-01-15', value: 210 },
+  { group: 'Credit Usage', date: '2024-02-01', value: 195 },
+  { group: 'Credit Usage', date: '2024-02-15', value: 260 },
+  { group: 'Credit Usage', date: '2024-03-01', value: 230 },
+  { group: 'Credit Usage', date: '2024-03-15', value: 300 },
+  { group: 'Credit Usage', date: '2024-04-01', value: 275 },
+  { group: 'Credit Usage', date: '2024-04-15', value: 320 },
+  { group: 'Credit Usage', date: '2024-05-01', value: 290 },
+  { group: 'Credit Usage', date: '2024-05-15', value: 350 },
 ];
 
 const areaChartOptions = {
@@ -46,7 +56,10 @@ const areaChartOptions = {
   curve: 'curveMonotoneX',
   height: '300px',
   color: {
-    scale: { 'Network Traffic': '#6929C4' },
+    scale: {
+      'Network Traffic': '#6929C4',
+      'Credit Usage': '#1192E8',
+    },
   },
 };
 
