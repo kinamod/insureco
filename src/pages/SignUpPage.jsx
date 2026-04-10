@@ -1,3 +1,23 @@
+/**
+ * SignUpPage – Multi-step insurance sign-up flow.
+ *
+ * Steps:
+ *   0 – Personal Information  (name, email, phone, date of birth)
+ *   1 – Coverage Type         (car / home / both)
+ *   2 – Your Address          (street, city, state, zip)
+ *   3 – Details               (car fields and/or home fields, shown
+ *                              conditionally based on step 1 selection)
+ *
+ * State is kept in a single `formData` object so every step can read
+ * data from any other step (e.g. step 3 needs the coverage selection
+ * made in step 1 to decide which detail sections to render).
+ *
+ * Navigation helpers:
+ *   handleNext   – advance one step (clamped at the last step)
+ *   handleBack   – go back one step (clamped at step 0)
+ *   handleCancel – abandon the flow and return to the landing page
+ */
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -13,6 +33,11 @@ import { ArrowLeft, ArrowRight } from '@carbon/icons-react';
 import StepBreadcrumb from '../components/StepBreadcrumb';
 import './SignUpPage.scss';
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Static data
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Labels shown in the StepBreadcrumb progress indicator. */
 const STEPS = [
   { label: 'Personal Info', key: 'personal' },
   { label: 'Coverage', key: 'coverage' },
@@ -20,6 +45,10 @@ const STEPS = [
   { label: 'Details', key: 'details' },
 ];
 
+/**
+ * The three mutually-exclusive coverage choices the user can pick in step 1.
+ * `showCar` / `showHome` flags control which detail sections render in step 3.
+ */
 const COVERAGE_OPTIONS = [
   {
     id: 'car',
@@ -44,6 +73,7 @@ const COVERAGE_OPTIONS = [
   },
 ];
 
+/** All 50 US states, used to populate the State dropdown in step 2. */
 const US_STATES = [
   'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
   'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
@@ -57,6 +87,7 @@ const US_STATES = [
   'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming',
 ];
 
+/** Residential property categories for the Home Type dropdown. */
 const HOME_TYPES = [
   'Single Family Home',
   'Condo',
@@ -66,10 +97,18 @@ const HOME_TYPES = [
   'Other',
 ];
 
+// Vehicle model year range: current year back 35 years.
 const currentYear = new Date().getFullYear();
 const CAR_YEARS = Array.from({ length: 36 }, (_, i) => currentYear - i);
+
+// Home construction year range: 1800 – 2025 (covers all insurable properties).
 const HOME_YEARS = Array.from({ length: 226 }, (_, i) => 2025 - i);
 
+// ─────────────────────────────────────────────────────────────────────────────
+// SVG icon components (inlined from the Figma design)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Car icon used on the coverage-type selection tiles. */
 function CarIcon() {
   return (
     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -78,6 +117,7 @@ function CarIcon() {
   );
 }
 
+/** House icon used on the coverage-type selection tiles. */
 function HomeIcon() {
   return (
     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -86,6 +126,7 @@ function HomeIcon() {
   );
 }
 
+/** Info-circle icon used inside the dismissible warning banner on Car Details. */
 function WarningIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -101,53 +142,84 @@ function WarningIcon() {
   );
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Main component
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function SignUpPage() {
   const navigate = useNavigate();
+
+  // Which step (0-indexed) the user is currently on.
   const [currentStep, setCurrentStep] = useState(0);
+
+  // Controls whether the dismissible yellow warning banner is visible.
+  // It resets to true when the page mounts; the user can hide it via Dismiss.
   const [warningVisible, setWarningVisible] = useState(true);
+
+  /**
+   * Single source of truth for all form fields across all steps.
+   * Keeping everything in one object avoids prop-drilling and makes it
+   * straightforward to submit the whole payload at the end of the flow.
+   */
   const [formData, setFormData] = useState({
+    // Step 0 – Personal Information
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
     altPhone: '',
     dob: '',
+
+    // Step 1 – Coverage Type ('car' | 'home' | 'both' | '')
     coverageType: '',
+
+    // Step 2 – Address
     street: '',
     city: '',
     state: '',
     zip: '',
+
+    // Step 3 – Car Details (shown when coverageType is 'car' or 'both')
     make: '',
     model: '',
     year: '',
     mileage: 1000,
     milesPerYear: 1000,
     vin: '',
+
+    // Step 3 – Home Details (shown when coverageType is 'home' or 'both')
     homeType: '',
     yearBuilt: '',
     squareFeet: 1000,
     homeValue: 1000,
   });
 
+  // Derived booleans that drive conditional rendering in the Details step.
   const showCar = formData.coverageType === 'car' || formData.coverageType === 'both';
   const showHome = formData.coverageType === 'home' || formData.coverageType === 'both';
 
+  /** Generic field updater – avoids writing a separate handler per input. */
   const setField = (field, value) =>
     setFormData(prev => ({ ...prev, [field]: value }));
 
+  // Navigation handlers – clamp so we never go out of bounds.
   const handleNext = () => setCurrentStep(s => Math.min(s + 1, STEPS.length - 1));
   const handleBack = () => setCurrentStep(s => Math.max(s - 1, 0));
+
+  /** Abandon the signup flow and return the user to the landing page. */
   const handleCancel = () => navigate('/');
 
-  const isFirstStep = currentStep === 0;
-  const isLastStep = currentStep === STEPS.length - 1;
-
+  // The warning banner appears only on the Car Details step and only while
+  // the user has not yet dismissed it.
   const showWarning = currentStep === 3 && showCar && warningVisible;
+
+  // The Cancel button appears only on the Details step when car fields are
+  // visible, matching the Figma design (Car Info frame).
   const showCancelOnDetails = currentStep === 3 && showCar;
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // Step renderers
-  // ──────────────────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────────────────
+  // Step 0 – Personal Information
+  // ─────────────────────────────────────────────────────────────────────────
 
   const renderPersonalInfo = () => (
     <>
@@ -181,6 +253,7 @@ export default function SignUpPage() {
           onChange={e => setField('email', e.target.value)}
           size="lg"
         />
+        {/* Primary contact number */}
         <TextInput
           id="phone"
           labelText="Phone Number"
@@ -190,6 +263,7 @@ export default function SignUpPage() {
           onChange={e => setField('phone', e.target.value)}
           size="lg"
         />
+        {/* Secondary / alternate contact number – matches Figma design */}
         <TextInput
           id="altPhone"
           labelText="Phone Number"
@@ -199,6 +273,10 @@ export default function SignUpPage() {
           onChange={e => setField('altPhone', e.target.value)}
           size="lg"
         />
+        {/*
+          Carbon's DatePicker wraps Flatpickr. onChange receives an array of
+          Date objects; we only care about the first (single-pick mode).
+        */}
         <DatePicker
           datePickerType="single"
           onChange={dates => dates[0] && setField('dob', dates[0])}
@@ -211,6 +289,8 @@ export default function SignUpPage() {
           />
         </DatePicker>
       </div>
+
+      {/* First step has no Back button – only Next. */}
       <div className="signup-form__actions signup-form__actions--end">
         <Button kind="primary" renderIcon={ArrowRight} onClick={handleNext} size="lg">
           Next
@@ -219,6 +299,10 @@ export default function SignUpPage() {
     </>
   );
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // Step 1 – Coverage Type
+  // ─────────────────────────────────────────────────────────────────────────
+
   const renderCoverageType = () => (
     <>
       <div className="signup-form__header">
@@ -226,6 +310,11 @@ export default function SignUpPage() {
       </div>
       <p className="signup-form__description">Which insurance coverage are you looking for</p>
       <div className="signup-form__fields">
+        {/*
+          Custom selectable tiles instead of Carbon's RadioTile because we need
+          full control over the icon layout and selection highlight styling.
+          Only one option can be active at a time (stored in formData.coverageType).
+        */}
         <div className="coverage-options">
           {COVERAGE_OPTIONS.map(option => (
             <button
@@ -257,6 +346,10 @@ export default function SignUpPage() {
     </>
   );
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // Step 2 – Address
+  // ─────────────────────────────────────────────────────────────────────────
+
   const renderAddress = () => (
     <>
       <div className="signup-form__header">
@@ -280,6 +373,7 @@ export default function SignUpPage() {
           onChange={e => setField('city', e.target.value)}
           size="lg"
         />
+        {/* Native <select> rendered via Carbon's Select / SelectItem wrappers. */}
         <Select
           id="state"
           labelText="State"
@@ -312,8 +406,13 @@ export default function SignUpPage() {
     </>
   );
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // Step 3 – Details (Car and/or Home, conditional on coverage selection)
+  // ─────────────────────────────────────────────────────────────────────────
+
   const renderDetails = () => (
     <>
+      {/* ── Car Details section ── */}
       {showCar && (
         <>
           <div className="signup-form__header">
@@ -337,6 +436,7 @@ export default function SignUpPage() {
               onChange={e => setField('model', e.target.value)}
               size="lg"
             />
+            {/* Year range: current year down to 35 years ago. */}
             <Select
               id="year"
               labelText="Year"
@@ -349,6 +449,11 @@ export default function SignUpPage() {
                 <SelectItem key={y} value={String(y)} text={String(y)} />
               ))}
             </Select>
+            {/*
+              Carbon NumberInput calls onChange with (event, { value, direction }).
+              We only need `value` (the new numeric value after the +/– click or
+              manual entry).
+            */}
             <NumberInput
               id="mileage"
               label="Mileage"
@@ -367,6 +472,7 @@ export default function SignUpPage() {
               onChange={(e, { value }) => setField('milesPerYear', value)}
               size="lg"
             />
+            {/* VIN is optional – helper text reminds the user it must be 17 chars. */}
             <TextInput
               id="vin"
               labelText="VIN (optional)"
@@ -380,8 +486,10 @@ export default function SignUpPage() {
         </>
       )}
 
+      {/* ── Home / Property Details section ── */}
       {showHome && (
         <>
+          {/* Visual separator when both car and home sections are visible */}
           {showCar && <div className="signup-form__section-divider" />}
           <div className="signup-form__header">
             <h2 className="signup-form__title">Property Details</h2>
@@ -400,6 +508,7 @@ export default function SignUpPage() {
                 <SelectItem key={t} value={t} text={t} />
               ))}
             </Select>
+            {/* Year range: 1800 – 2025 to cover all insurable construction years. */}
             <Select
               id="yearBuilt"
               labelText="Year Built"
@@ -436,6 +545,7 @@ export default function SignUpPage() {
         </>
       )}
 
+      {/* Fallback: user skipped step 1 and arrived here without choosing coverage. */}
       {!showCar && !showHome && (
         <div className="signup-form__empty-details">
           <p>Please go back and select a coverage type first.</p>
@@ -443,6 +553,10 @@ export default function SignUpPage() {
       )}
 
       <div className="signup-form__actions">
+        {/*
+          Cancel is only shown on the Details step when car fields are visible,
+          matching the Figma "Car Info" frame. It abandons the flow entirely.
+        */}
         {showCancelOnDetails && (
           <Button kind="tertiary" onClick={handleCancel} size="lg">
             Cancel
@@ -458,6 +572,7 @@ export default function SignUpPage() {
     </>
   );
 
+  // Map each step index to its render function for clean dispatch below.
   const stepRenderers = [
     renderPersonalInfo,
     renderCoverageType,
@@ -465,10 +580,15 @@ export default function SignUpPage() {
     renderDetails,
   ];
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // Render
+  // ─────────────────────────────────────────────────────────────────────────
+
   return (
     <div className="signup-page">
       <div className="signup-wrapper">
-        {/* Outer area: gradient bg, header, progress */}
+
+        {/* ── Gradient outer area: brand header + step progress ── */}
         <div className="signup-outer">
           <div className="signup-header">
             <h1 className="signup-header__title">Sign Up for InsureCo</h1>
@@ -476,12 +596,16 @@ export default function SignUpPage() {
               Get started with your insurance coverage in just a few steps
             </p>
           </div>
+
+          {/* StepBreadcrumb is the project's custom progress indicator
+              (Carbon's ProgressIndicator is banned due to theming issues –
+              see .builder/rules/banned-components.mdc). */}
           <div className="signup-progress">
             <StepBreadcrumb steps={STEPS} currentIndex={currentStep} />
           </div>
         </div>
 
-        {/* Warning banner – only on Car Details */}
+        {/* ── Dismissible warning banner (Car Details step only) ── */}
         {showWarning && (
           <div className="signup-warning" role="alert">
             <div className="signup-warning__content">
@@ -498,10 +622,11 @@ export default function SignUpPage() {
           </div>
         )}
 
-        {/* Main form card */}
+        {/* ── Main form card – renders the active step ── */}
         <div className="signup-form">
           {stepRenderers[currentStep]()}
         </div>
+
       </div>
     </div>
   );
