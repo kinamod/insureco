@@ -1,0 +1,373 @@
+@use '../styles/tokens' as *;
+
+// ──────────────────────────────────────────────────────────────────────────
+// Page wrapper – centers the signup card in the content area
+// ──────────────────────────────────────────────────────────────────────────
+.signup-page {
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-05) var(--spacing-05);
+  background: var(--background-primary);
+}
+
+.signup-wrapper {
+  width: 100%;
+  max-width: 703px;
+  display: flex;
+  flex-direction: column;
+  background: var(--background-primary);
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Outer area – diagonal gradient background containing header + progress
+// ──────────────────────────────────────────────────────────────────────────
+.signup-outer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-07);
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #f4f4f4 70.71%, #ffffff 0%);
+
+  @media (max-width: 671px) {
+    padding: var(--spacing-05) var(--spacing-04);
+    gap: var(--spacing-05);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Header – red gradient banner
+// ──────────────────────────────────────────────────────────────────────────
+.signup-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 31px var(--spacing-09);
+  border-radius: 8px;
+  background: linear-gradient(135deg, #a2191f 70.71%, #da1e28 0%);
+  box-shadow: 0 4px 12px rgba(218, 30, 40, 0.15);
+  text-align: center;
+
+  @media (max-width: 671px) {
+    padding: var(--spacing-06) var(--spacing-05);
+  }
+}
+
+.signup-header__title {
+  color: #ffffff;
+  font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0;
+
+  @media (max-width: 671px) {
+    font-size: 22px;
+  }
+}
+
+.signup-header__subtitle {
+  color: rgba(255, 255, 255, 0.95);
+  font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+
+  @media (max-width: 671px) {
+    font-size: 14px;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Progress indicator wrapper
+// ──────────────────────────────────────────────────────────────────────────
+.signup-progress {
+  padding: 18px;
+  border-radius: 4px;
+  border-top: 1px solid var(--color-brand-red-60);
+  background: #f4f4f4;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  :root[data-carbon-theme='g90'] &,
+  :root[data-carbon-theme='g100'] & {
+    background: var(--background-secondary);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Warning / alert banner
+// ──────────────────────────────────────────────────────────────────────────
+.signup-warning {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-05);
+  padding: 13px 34px 13px 33px;
+  border: 1px solid #000000;
+  background: #fff4b4;
+
+  @media (max-width: 671px) {
+    padding: var(--spacing-04);
+    flex-wrap: wrap;
+  }
+}
+
+.signup-warning__content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.signup-warning__message {
+  color: #946c00;
+  font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+.signup-warning__dismiss {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #946c00;
+  font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22px;
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Main form card
+// ──────────────────────────────────────────────────────────────────────────
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-07);
+  padding: 24px;
+  border-top: 5px solid #fb0c0c;
+  background: #f4f4f4;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  :root[data-carbon-theme='g90'] &,
+  :root[data-carbon-theme='g100'] & {
+    background: var(--background-secondary);
+  }
+
+  @media (max-width: 671px) {
+    padding: var(--spacing-05) var(--spacing-04);
+    gap: var(--spacing-06);
+  }
+}
+
+// Form section title with red underline
+.signup-form__header {
+  padding-bottom: 11px;
+  border-bottom: 1px solid #fc0404;
+}
+
+.signup-form__title {
+  color: var(--text-primary);
+  font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.signup-form__description {
+  color: var(--text-primary);
+  font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Form fields stack
+// ──────────────────────────────────────────────────────────────────────────
+.signup-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-06);
+
+  // Override Carbon field background so it matches Figma (#f4f4f4 page bg)
+  .cds--text-input,
+  .cds--number__input-wrapper input,
+  .cds--select-input {
+    background-color: var(--field-background) !important;
+    color: var(--field-text) !important;
+    border-bottom-color: var(--border-strong) !important;
+  }
+
+  .cds--label {
+    color: var(--text-primary) !important;
+  }
+
+  .cds--text-input::placeholder,
+  .cds--select-input::placeholder {
+    color: var(--field-placeholder) !important;
+  }
+}
+
+// Section divider between Car and Home sections (when both selected)
+.signup-form__section-divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: var(--spacing-03) 0;
+}
+
+.signup-form__empty-details {
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: center;
+  padding: var(--spacing-07) 0;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Coverage type selection tiles
+// ──────────────────────────────────────────────────────────────────────────
+.coverage-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-05);
+}
+
+.coverage-tile {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  padding: var(--spacing-05);
+  width: 100%;
+  background: var(--background-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 2px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    border-color: var(--interactive-primary);
+    box-shadow: 0 0 0 1px var(--interactive-primary);
+  }
+
+  &--selected {
+    border-color: var(--interactive-primary);
+    box-shadow: 0 0 0 1px var(--interactive-primary);
+    background: var(--background-selected);
+  }
+}
+
+.coverage-tile__icons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  color: var(--text-primary);
+}
+
+.coverage-tile__text {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  flex: 1;
+  min-width: 0;
+}
+
+.coverage-tile__title {
+  color: var(--text-primary);
+  font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+
+  @media (max-width: 671px) {
+    font-size: 16px;
+  }
+}
+
+.coverage-tile__description {
+  color: var(--text-primary);
+  font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.43;
+  margin: 0;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Action buttons row
+// ──────────────────────────────────────────────────────────────────────────
+.signup-form__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 15px;
+  padding-top: var(--spacing-06);
+  border-top: 1px solid var(--color-brand-red-60);
+  flex-wrap: wrap;
+
+  &--end {
+    justify-content: flex-end;
+  }
+
+  // Secondary button (Back) - dark charcoal
+  .cds--btn--secondary {
+    background-color: #393939 !important;
+    color: #ffffff !important;
+    border-color: #393939 !important;
+
+    &:hover {
+      background-color: #4c4c4c !important;
+    }
+  }
+
+  // Tertiary button (Cancel) - blue outline
+  .cds--btn--tertiary {
+    color: var(--color-brand-blue-60) !important;
+    border-color: var(--color-brand-blue-60) !important;
+
+    &:hover {
+      background-color: rgba(15, 98, 254, 0.1) !important;
+    }
+  }
+
+  // Primary button (Next) - brand red
+  .cds--btn--primary {
+    background-color: var(--color-brand-red-60) !important;
+    border-color: var(--color-brand-red-60) !important;
+
+    &:hover {
+      background-color: var(--color-brand-red-70) !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column-reverse;
+    align-items: stretch;
+
+    .cds--btn {
+      width: 100%;
+      justify-content: center;
+      max-width: 100%;
+    }
+  }
+}
