@@ -68,6 +68,7 @@ export default function LandingPage() {
   return (
     <div className="landing-page">
       {/* Hero Section */}
+      {/* Hero Section - Main landing banner with heading, tagline, and CTA buttons */}
       <section className="hero-section">
         <Grid>
           <Column lg={16} md={8} sm={4}>
