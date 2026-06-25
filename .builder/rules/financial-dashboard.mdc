@@ -1,0 +1,268 @@
+---
+description: Financial Dashboard with three design variations
+globs: 
+alwaysApply: false
+---
+
+# Financial Dashboard Implementation
+
+## Overview
+
+The Financial Dashboard (IFAD - Insurance Financial Analytics Dashboard) provides a centralized financial overview for insurance portfolio managers. It includes three distinct design variations that can be easily switched between:
+
+1. **Conservative** - Traditional business intelligence aesthetic with structured KPI cards, standard charts, and organized table
+2. **Minimal** - Clean, simple design focusing on typography and whitespace with inline list-based asset display
+3. **Wild** - Creative, modern design with gradient backgrounds, animated elements, card grids, and advanced chart types
+
+## Architecture
+
+### Directory Structure
+
+
+src/
+├── pages/
+│   ├── FinancialDashboardPage.jsx          # Main dashboard page with design switcher
+│   └── FinancialDashboardPage.scss         # Page-level styles
+├── components/financial/
+│   ├── ConservativeDashboard.jsx           # Conservative design variant
+│   ├── ConservativeDashboard.scss
+│   ├── MinimalDashboard.jsx                # Minimal design variant
+│   ├── MinimalDashboard.scss
+│   ├── WildDashboard.jsx                   # Wild design variant
+│   └── WildDashboard.scss
+└── data/
+    └── financialData.js                    # Mock data and utilities
+```
+
+### Key Components
+
+#### FinancialDashboardPage (Main Container)
+- Manages design state (conservative, minimal, wild)
+- Handles gross vs. net view toggle
+- Calculates aggregate statistics
+- Routes to correct design variant
+- Provides navigation and controls
+
+**File**: `src/pages/FinancialDashboardPage.jsx`
+
+**Key Props Passed Down**:
+- `stats`: Object with totalOwed, totalClaimed, autoBreakdown, propertyBreakdown
+- `assets`: Array of asset objects
+- `chartData`: Monthly historical data for charts
+- `grossVsNet`: Current view mode
+
+#### ConservativeDashboard
+Traditional business analytics dashboard with:
+- 4-column KPI grid with summary statistics
+- Multi-series line chart showing historical trends
+- Sortable data table with tagging
+- Professional color scheme
+
+**File**: `src/components/financial/ConservativeDashboard.jsx`
+
+#### MinimalDashboard
+Clean, typography-focused design with:
+- Inline stat display with bottom borders
+- Single-series area chart
+- List-based asset view with hover states
+- Minimal visual elements
+
+**File**: `src/components/financial/MinimalDashboard.jsx`
+
+#### WildDashboard
+Creative, modern dashboard with:
+- Gradient hero header with animated pulse effect
+- 2x2 grid of visualization cards:
+  - Portfolio breakdown (pie chart)
+  - Risk matrix (scatter plot)
+  - Portfolio radar
+  - Quick metrics
+- Card-based asset grid with hover animations
+- Color-coded asset types
+
+**File**: `src/components/financial/WildDashboard.jsx`
+
+## Features
+
+### Design Switcher
+
+Located in the dashboard header, allows users to toggle between three design variations:
+
+```jsx
+<div className="design-buttons">
+  <button className={design === 'conservative' ? 'active' : ''} onClick={() => setDesign('conservative')}>
+    Conservative
+  </button>
+  {/* ... */}
+</div>
+```
+
+The active design is styled with:
+- Primary color text
+- Background highlight
+- Subtle shadow
+- Semi-bold font weight
+
+### Gross vs. Net Toggle
+
+Secondary button in header controls financial view. Currently UI-only (calculations available for future implementation).
+
+### Data Aggregation
+
+Statistics are calculated in useMemo for performance:
+- Total premiums owed (YTD)
+- Total claims paid (YTD)
+- Auto portfolio breakdown
+- Property portfolio breakdown
+
+### Chart Interactivity
+
+All three designs include interactive charts using Recharts:
+- Tooltips on hover
+- Responsive sizing
+- Theme-aware colors
+
+### Asset Sorting
+
+All dashboard variants support sorting by:
+- Asset name
+- Total claims (highest first)
+- Due date
+
+## Styling Approach
+
+All three designs follow the InsureCo design token system:
+
+### Responsive Breakpoints
+- Desktop: Full 4-column grids
+- Tablet (1024px): 2-column grids
+- Mobile (640px): Single column stacked layout
+
+### Theme Awareness
+- Uses `var(--background-primary)`, `var(--background-secondary)`, etc.
+- Adapts automatically to light/dark themes
+- Maintains readability in both modes
+
+### Color Usage
+- **Green (#24a148)**: Property/Revenue
+- **Blue (#0f62fe)**: Data/Primary
+- **Red (#da1e28)**: Claims/Expenses
+- **Yellow (#f1c21b)**: Auto/Secondary
+
+## Mock Data
+
+**File**: `src/data/financialData.js`
+
+### mockAssets
+Array of 8 sample assets (4 Auto, 4 Property) with:
+- ID and name
+- Category (Auto/Property)
+- Premium due amount
+- Due date
+- Total claims
+- Claim history count
+
+### mockChartData
+6 months of historical data with:
+- Property premiums and claims
+- Auto premiums and claims
+- Monthly intervals
+
+### mockAssetDetails (Extendable)
+Per-asset detail data structure for future drill-down functionality.
+
+## Dependencies
+
+### New Package
+- **recharts** ^2.x - Charting library for all visualizations
+
+### Existing Packages Used
+- @carbon/react - Button, DataTable, Tag components
+- react-router-dom - Navigation
+- SCSS - All styling
+
+## Routing
+
+**Route**: `/financial-dashboard`
+
+### Navigation Integration
+Added to both header dropdown and sidebar:
+- Header: "Business" menu → "Financial Analytics"
+- Sidebar: "Business" submenu → "Financial Analytics"
+
+**File Modified**: `src/components/Layout.jsx`
+
+## Future Enhancements
+
+1. **Asset Drill-Down**
+   - Click asset row to view detailed claim history
+   - Display policy documents
+   - Show supporting media
+
+2. **Filtering**
+   - Filter by region, date range
+   - Gross vs. Net calculations
+
+3. **Predictive Analytics** (Phase 2)
+   - Forecast future claims
+   - Risk analysis
+
+4. **Export Functionality**
+   - CSV export of assets
+   - PDF report generation
+
+5. **Real Data Integration**
+   - Connect to API endpoints
+   - Replace mockAssets and mockChartData
+
+## Customization Guide
+
+### Adding a New Design Variant
+
+1. Create component in `src/components/financial/NewDesignDashboard.jsx`
+2. Accept same props: `{ stats, assets, chartData, grossVsNet }`
+3. Add scss file for styles
+4. Import in `FinancialDashboardPage.jsx`
+5. Add case to switch statement in renderDashboard()
+6. Add button to design switcher
+
+### Modifying Existing Design
+
+Simply edit the corresponding component and SCSS file. Changes update instantly in dev mode.
+
+### Updating Mock Data
+
+Edit `src/data/financialData.js` to:
+- Add more assets to mockAssets array
+- Update historical data in mockChartData
+- Add per-asset details to mockAssetDetails
+
+## Performance Considerations
+
+- **useMemo** prevents unnecessary stat recalculations
+- Chart components are responsive and lazy-loaded by Recharts
+- Design switching doesn't remount components unnecessarily
+- All styles use CSS variables for efficient theme switching
+
+## Accessibility
+
+- Semantic HTML structure
+- Chart tooltips provide data accessibility
+- Theme toggle ensures sufficient contrast
+- Keyboard-navigable design switcher buttons
+
+## Testing Recommendations
+
+1. **Visual Testing**: Test all three designs in light and dark themes
+2. **Responsive Testing**: Verify mobile/tablet layouts work correctly
+3. **Data Validation**: Ensure calculations match expected values
+4. **Chart Interactions**: Test tooltip and responsive behavior
+5. **Navigation**: Verify design switching works smoothly
+
+## Browser Support
+
+All modern browsers supporting:
+- ES6+
+- CSS Grid and Flexbox
+- CSS Custom Properties
+- SVG (for Recharts visualizations)

@@ -1,0 +1,95 @@
+export const mockAssets = [
+  {
+    id: 'A001',
+    name: '2022 Freightliner Cascadia',
+    category: 'Auto',
+    premiumDue: 2500,
+    dueDate: '2025-02-15',
+    totalClaims: 45000,
+    claimHistory: 3,
+  },
+  {
+    id: 'P001',
+    name: '123 Maple St Warehouse',
+    category: 'Property',
+    premiumDue: 5200,
+    dueDate: '2025-03-01',
+    totalClaims: 125000,
+    claimHistory: 5,
+  },
+  {
+    id: 'A002',
+    name: '2023 Ford F-150',
+    category: 'Auto',
+    premiumDue: 1800,
+    dueDate: '2025-02-28',
+    totalClaims: 22500,
+    claimHistory: 2,
+  },
+  {
+    id: 'P002',
+    name: '456 Industrial Park',
+    category: 'Property',
+    premiumDue: 8900,
+    dueDate: '2025-01-31',
+    totalClaims: 250000,
+    claimHistory: 8,
+  },
+  {
+    id: 'A003',
+    name: '2021 Volvo VNL',
+    category: 'Auto',
+    premiumDue: 2200,
+    dueDate: '2025-03-15',
+    totalClaims: 18000,
+    claimHistory: 1,
+  },
+  {
+    id: 'P003',
+    name: '789 Commerce Avenue',
+    category: 'Property',
+    premiumDue: 3500,
+    dueDate: '2025-02-20',
+    totalClaims: 75000,
+    claimHistory: 4,
+  },
+  {
+    id: 'A004',
+    name: '2023 Peterbilt 579',
+    category: 'Auto',
+    premiumDue: 2600,
+    dueDate: '2025-04-01',
+    totalClaims: 35000,
+    claimHistory: 2,
+  },
+  {
+    id: 'P004',
+    name: '321 Retail Center',
+    category: 'Property',
+    premiumDue: 6100,
+    dueDate: '2025-03-10',
+    totalClaims: 180000,
+    claimHistory: 6,
+  },
+];
+
+export const mockChartData = [
+  { month: 'Jan', propertyPremiums: 28000, propertyClaims: 15000, autoPremiums: 12000, autoClaims: 8000 },
+  { month: 'Feb', propertyPremiums: 32000, propertyClaims: 18000, autoPremiums: 14000, autoClaims: 9000 },
+  { month: 'Mar', propertyPremiums: 35000, propertyClaims: 22000, autoPremiums: 16000, autoClaims: 11000 },
+  { month: 'Apr', propertyPremiums: 38000, propertyClaims: 25000, autoPremiums: 18000, autoClaims: 13000 },
+  { month: 'May', propertyPremiums: 42000, propertyClaims: 28000, autoPremiums: 20000, autoClaims: 14000 },
+  { month: 'Jun', propertyPremiums: 45000, propertyClaims: 31000, autoPremiums: 22000, autoClaims: 15000 },
+];
+
+export const mockAssetDetails = {
+  'A001': {
+    claims: [
+      { id: 'C001', date: '2024-11-15', amount: 15000, description: 'Collision damage' },
+      { id: 'C002', date: '2024-08-20', amount: 18000, description: 'Cargo loss' },
+      { id: 'C003', date: '2024-04-10', amount: 12000, description: 'Minor accident' },
+    ],
+    policyDocs: 'Full Coverage, $25k deductible',
+    coverageLimits: '$500,000',
+  },
+};
