@@ -20,6 +20,7 @@ import AddVehiclePage from "./pages/business/AddVehiclePage";
 import FileClaimPage from "./pages/business/FileClaimPage";
 import MakePaymentPage from "./pages/business/MakePaymentPage";
 import MapPage from "./pages/business/MapPage";
+import FinancialDashboardPage from "./pages/FinancialDashboardPage";
 
 export default function App() {
   return (
@@ -48,6 +49,7 @@ export default function App() {
         <Route path="/business/payments" element={<BusinessComingSoon />} />
         <Route path="/business/file-claim" element={<FileClaimPage />} />
         <Route path="/business/make-payment" element={<MakePaymentPage />} />
+        <Route path="/financial-dashboard" element={<FinancialDashboardPage />} />
       </Routes>
     </Layout>
   );

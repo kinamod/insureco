@@ -1,0 +1,109 @@
+@use '../styles/tokens' as *;
+
+.financial-dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-07);
+  padding: var(--spacing-07);
+  background: var(--background-primary);
+}
+
+.financial-dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-06);
+  flex-wrap: wrap;
+
+  .page-title {
+    margin: 0 0 var(--spacing-02) 0;
+    color: var(--text-primary);
+    font-size: 2rem;
+    font-weight: 600;
+  }
+
+  .page-description {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+}
+
+.dashboard-controls {
+  display: flex;
+  gap: var(--spacing-04);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.design-switcher {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-04);
+
+  .design-label {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  .design-buttons {
+    display: flex;
+    gap: var(--spacing-01);
+    background: var(--background-secondary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-01);
+  }
+}
+
+.design-button {
+  padding: var(--spacing-02) var(--spacing-04);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border-radius: calc(var(--radius-md) - 1px);
+  transition: all var(--duration-fast-01) ease-out;
+
+  &:hover {
+    color: var(--text-primary);
+    background: var(--background-hover);
+  }
+
+  &.active {
+    background: var(--background-primary);
+    color: var(--interactive-primary);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.financial-dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-06);
+}
+
+@media (max-width: 768px) {
+  .financial-dashboard-page {
+    padding: var(--spacing-04);
+    gap: var(--spacing-05);
+  }
+
+  .financial-dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dashboard-controls {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .design-switcher {
+    width: 100%;
+  }
+}
