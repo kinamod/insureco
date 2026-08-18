@@ -1,0 +1,121 @@
+@use '../../styles/tokens' as *;
+
+.trend-chart {
+  width: 100%;
+
+  &__svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  &__gridline {
+    stroke: var(--border-subtle);
+    stroke-width: 1;
+  }
+
+  &__axis-label {
+    fill: var(--text-tertiary);
+    font-size: 10px;
+    font-family: var(--font-family-sans);
+  }
+
+  &__line {
+    stroke-width: 2;
+    fill: none;
+  }
+
+  &__area {
+    opacity: 0;
+  }
+
+  &__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-04);
+    margin-top: var(--spacing-04);
+  }
+
+  &__legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-02);
+    background: none;
+    border: none;
+    padding: var(--spacing-02) var(--spacing-03);
+    border-radius: var(--radius-full);
+    font-size: var(--body-sm-size);
+    color: var(--text-primary);
+    cursor: pointer;
+
+    &--off {
+      opacity: 0.4;
+    }
+
+    &:hover {
+      background: var(--background-hover);
+    }
+  }
+
+  &__legend-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: var(--radius-circle);
+    flex-shrink: 0;
+  }
+
+  // Standard: clean Carbon-style thin lines, no fill
+  &--standard {
+    .trend-chart__line {
+      stroke-width: 2;
+    }
+  }
+
+  // Bold: thicker lines with soft gradient area fill
+  &--bold {
+    .trend-chart__line {
+      stroke-width: 3;
+    }
+
+    .trend-chart__area {
+      opacity: 0.12;
+    }
+
+    .trend-chart__legend-item {
+      font-weight: var(--font-weight-semibold);
+      border: 1px solid var(--border-subtle);
+    }
+  }
+
+  // Radical: glowing neon lines on a dark surface
+  &--radical {
+    background: var(--color-brand-red-100, #2d0709);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-05);
+
+    .trend-chart__gridline {
+      stroke: rgba(255, 255, 255, 0.08);
+    }
+
+    .trend-chart__axis-label {
+      fill: rgba(255, 255, 255, 0.5);
+    }
+
+    .trend-chart__line {
+      stroke-width: 2.5;
+      filter: drop-shadow(0 0 6px currentColor);
+    }
+
+    .trend-chart__area {
+      opacity: 0.18;
+    }
+
+    .trend-chart__legend-item {
+      color: #f4f4f4;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+    }
+  }
+}

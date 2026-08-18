@@ -1,0 +1,52 @@
+---
+description: Insurance Financial Analytics Dashboard (IFAD) - 3 implemented style variants
+globs:
+alwaysApply: false
+---
+
+# Financial Dashboard (IFAD)
+
+Implements `FinancialDashboardPRD.pdf`: KPI header, premiums/claims trend chart,
+and a sortable Auto + Property Asset Performance Ledger with drill-down.
+
+## Routes
+
+- `/financial-dashboard` - Standard variant (current-system match)
+- `/financial-dashboard/bold` - Bold variant (adventurous)
+- `/financial-dashboard/original` - Original variant (experimental/out-there)
+
+All three are linked from the "Financial Dashboard" menu in `src/components/Layout.jsx`
+(header dropdown + side nav submenu), same pattern as the existing "Business" menu.
+
+## Shared building blocks
+
+- `src/data/financialDashboardData.js` - derives all IFAD figures (Total Owed,
+  Total Claimed, Auto/Property split, monthly trend, Asset Ledger, regions)
+  from the existing `src/data/businessMockData.js` instead of a second dataset.
+  Includes a Gross/Net multiplier (`getPortfolioTotals(basis)`) and
+  category/region filtering (`filterLedger`).
+- `src/components/financial/TrendChart.jsx` - dependency-free SVG multi-series
+  line chart with a toggleable legend. Geometry/scaling is shared; the `theme`
+  prop (`standard` | `bold` | `radical`) only changes the visual skin via
+  `TrendChart.scss`.
+- `src/components/financial/AssetLedgerTable.jsx` - shared sortable Carbon
+  `DataTable` for the ledger. Row click navigates to the existing
+  `/business/properties/:id` or `/business/fleet/:id` detail pages (reused
+  Master-Detail drill-down, no new detail views were created).
+
+## Variant design intent
+
+- **Standard** (`FinancialDashboardStandard.jsx`): mirrors `BusinessDashboard.jsx`
+  layout conventions (Grid/Tile, ContentSwitcher, Dropdown) so it matches the
+  rest of the app.
+- **Bold** (`FinancialDashboardBold.jsx`): same data/components, heavier
+  typography, gradient hero banner and KPI cards, still fully theme-token
+  driven (light/dark compatible).
+- **Original** (`FinancialDashboardOriginal.jsx`): intentionally fixed dark
+  "command center" aesthetic (bento grid, glass cards, neon gauge) that does
+  not follow the light/dark theme toggle by design - a deliberate one-off
+  visual language, not the default app pattern. Uses static (non theme-aware)
+  color tokens like `--color-brand-red-60` on purpose.
+
+If any of these routes/components are renamed or removed, update the links in
+`src/components/Layout.jsx` accordingly.

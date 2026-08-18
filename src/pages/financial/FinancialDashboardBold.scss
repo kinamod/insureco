@@ -1,0 +1,185 @@
+@use '../../styles/tokens' as *;
+
+.financial-dashboard-bold {
+  background: var(--background-primary);
+
+  .fdb-hero {
+    padding: var(--spacing-08) var(--spacing-06) var(--spacing-07);
+    background: linear-gradient(135deg, var(--color-brand-red-70), var(--color-brand-red-60));
+    color: var(--text-on-color);
+
+    @media (min-width: 672px) {
+      padding: var(--spacing-09) var(--spacing-07) var(--spacing-08);
+    }
+
+    @media (min-width: 1056px) {
+      padding: var(--spacing-10) var(--spacing-09) var(--spacing-08);
+    }
+  }
+
+  .fdb-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-02);
+    font-size: var(--body-sm-size);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 var(--spacing-04) 0;
+    opacity: 0.9;
+
+    svg {
+      fill: currentColor;
+    }
+  }
+
+  .fdb-title {
+    font-size: var(--heading-h1-size);
+    font-weight: var(--font-weight-semibold);
+    margin: 0 0 var(--spacing-03) 0;
+  }
+
+  .fdb-subtitle {
+    font-size: var(--body-lg-size);
+    max-width: 640px;
+    margin: 0;
+    opacity: 0.9;
+  }
+
+  .fdb-grid {
+    padding: var(--spacing-06);
+
+    @media (min-width: 672px) {
+      padding: var(--spacing-07);
+    }
+
+    @media (min-width: 1056px) {
+      padding: var(--spacing-09);
+    }
+  }
+
+  .fdb-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-05);
+    margin-bottom: var(--spacing-07);
+    margin-top: calc(-1 * var(--spacing-09));
+    position: relative;
+    z-index: 1;
+
+    @media (max-width: 671px) {
+      margin-top: var(--spacing-05);
+    }
+  }
+
+  .fdb-basis-switcher {
+    max-width: 200px;
+  }
+
+  .fdb-region-dropdown {
+    min-width: 220px;
+  }
+
+  .fdb-kpi-card {
+    height: 100%;
+    padding: var(--spacing-06);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-07);
+    box-shadow: var(--card-shadow);
+    background: var(--background-secondary);
+    border: 1px solid var(--border-subtle);
+
+    &--owed {
+      background: linear-gradient(160deg, var(--background-secondary), rgba(15, 98, 254, 0.08));
+    }
+
+    &--claimed {
+      background: linear-gradient(160deg, var(--background-secondary), rgba(218, 30, 40, 0.08));
+    }
+
+    &--ratio {
+      background: linear-gradient(160deg, var(--background-secondary), rgba(36, 161, 72, 0.08));
+    }
+  }
+
+  .fdb-kpi-label {
+    font-size: var(--body-sm-size);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin: 0 0 var(--spacing-03) 0;
+  }
+
+  .fdb-kpi-value {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-02);
+    font-size: var(--heading-h2-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-04) 0;
+  }
+
+  .fdb-kpi-ratio-icon {
+    fill: var(--color-error);
+  }
+
+  .fdb-kpi-caption {
+    font-size: var(--body-sm-size);
+    color: var(--text-tertiary);
+    margin: 0;
+  }
+
+  .fdb-kpi-bars {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-02);
+  }
+
+  .fdb-kpi-bar-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-02);
+    font-size: var(--body-sm-size);
+    color: var(--text-secondary);
+
+    svg {
+      fill: var(--text-tertiary);
+    }
+  }
+
+  .fdb-chart-card,
+  .fdb-table-card {
+    padding: var(--spacing-06);
+    background: var(--background-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-07);
+    box-shadow: var(--card-shadow);
+  }
+
+  .fdb-card-title {
+    font-size: var(--heading-h4-size);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-05) 0;
+  }
+
+  .fdb-table-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-04);
+    margin-bottom: var(--spacing-05);
+
+    .fdb-card-title {
+      margin: 0;
+    }
+  }
+
+  .fdb-category-switcher {
+    max-width: 260px;
+  }
+}

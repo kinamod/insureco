@@ -6,6 +6,9 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import SignUpConfirmationPage from "./pages/SignUpConfirmationPage";
 import DashboardHome from "./pages/DashboardHome";
+import FinancialDashboardStandard from "./pages/financial/FinancialDashboardStandard";
+import FinancialDashboardBold from "./pages/financial/FinancialDashboardBold";
+import FinancialDashboardOriginal from "./pages/financial/FinancialDashboardOriginal";
 import AboutPage from "./pages/AboutPage";
 import ThemePreviewPage from "./pages/ThemePreviewPage";
 import ProgressIndicatorPreview from "./pages/ProgressIndicatorPreview";
@@ -30,6 +33,9 @@ export default function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/signup/confirmation" element={<SignUpConfirmationPage />} />
         <Route path="/dashboard" element={<DashboardHome />} />
+        <Route path="/financial-dashboard" element={<FinancialDashboardStandard />} />
+        <Route path="/financial-dashboard/bold" element={<FinancialDashboardBold />} />
+        <Route path="/financial-dashboard/original" element={<FinancialDashboardOriginal />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/theme-preview" element={<ThemePreviewPage />} />
         <Route path="/progress-preview" element={<ProgressIndicatorPreview />} />
