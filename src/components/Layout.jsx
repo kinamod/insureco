@@ -66,6 +66,19 @@ export default function Layout({ children }) {
                   Dashboard
                 </HeaderMenuItem>
 
+                {/* Financial Dashboard Menu with Dropdown */}
+                <HeaderMenu aria-label="Financial Dashboard" menuLinkName="Financial Dashboard">
+                  <HeaderMenuItem element={Link} to="/financial-dashboard">
+                    Standard
+                  </HeaderMenuItem>
+                  <HeaderMenuItem element={Link} to="/financial-dashboard/bold">
+                    Bold
+                  </HeaderMenuItem>
+                  <HeaderMenuItem element={Link} to="/financial-dashboard/original">
+                    Experimental
+                  </HeaderMenuItem>
+                </HeaderMenu>
+
                 {/* Business Menu with Dropdown */}
                 <HeaderMenu aria-label="Business" menuLinkName="Business">
                   <HeaderMenuItem element={Link} to="/business/dashboard">
@@ -127,6 +140,31 @@ export default function Layout({ children }) {
                     <HeaderMenuItem onClick={() => handleNavigateAndClose("/dashboard")}>
                       Dashboard
                     </HeaderMenuItem>
+
+                    {/* Financial Dashboard Section in Sidebar with Submenu */}
+                    <SideNavMenu title="Financial Dashboard">
+                      <SideNavMenuItem
+                        element={Link}
+                        to="/financial-dashboard"
+                        onClick={isSideNavExpanded ? onClickSideNavExpand : undefined}
+                      >
+                        Standard
+                      </SideNavMenuItem>
+                      <SideNavMenuItem
+                        element={Link}
+                        to="/financial-dashboard/bold"
+                        onClick={isSideNavExpanded ? onClickSideNavExpand : undefined}
+                      >
+                        Bold
+                      </SideNavMenuItem>
+                      <SideNavMenuItem
+                        element={Link}
+                        to="/financial-dashboard/original"
+                        onClick={isSideNavExpanded ? onClickSideNavExpand : undefined}
+                      >
+                        Experimental
+                      </SideNavMenuItem>
+                    </SideNavMenu>
 
                     {/* Business Section in Sidebar with Submenu */}
                     <SideNavMenu title="Business">

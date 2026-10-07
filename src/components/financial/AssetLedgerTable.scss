@@ -1,0 +1,11 @@
+@use '../../styles/tokens' as *;
+
+.asset-ledger-table {
+  .asset-ledger-row {
+    cursor: pointer;
+
+    &:hover {
+      background: var(--background-hover);
+    }
+  }
+}
