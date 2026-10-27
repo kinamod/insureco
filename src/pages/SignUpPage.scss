@@ -1,0 +1,130 @@
+@use '../styles/tokens' as *;
+
+.signup-page {
+  padding: var(--spacing-05);
+  background: var(--background-primary);
+  min-height: calc(100vh - 3rem);
+
+  &__container {
+    max-width: 44rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-06);
+  }
+
+  &__header {
+    padding: var(--spacing-07) var(--spacing-05);
+    text-align: center;
+    background: var(--color-brand-red-60);
+    color: var(--text-on-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow);
+
+    h1 {
+      font-size: var(--heading-h2-size);
+      font-weight: 400;
+      margin-bottom: var(--spacing-04);
+    }
+
+    p {
+      font-size: 1rem;
+    }
+  }
+
+  &__progress {
+    padding: var(--spacing-05);
+    background: var(--background-secondary);
+    border-top: 1px solid var(--interactive-primary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--card-shadow);
+  }
+
+  &__card {
+    padding: var(--spacing-06);
+    background: var(--background-secondary);
+    border-top: 4px solid var(--interactive-primary);
+    box-shadow: var(--card-shadow);
+  }
+
+  &__title {
+    font-size: var(--heading-h3-size);
+    font-weight: 400;
+    color: var(--text-primary);
+    padding-bottom: var(--spacing-04);
+    border-bottom: 1px solid var(--interactive-primary);
+    margin-bottom: var(--spacing-06);
+  }
+
+  &__description {
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    margin-bottom: var(--spacing-06);
+  }
+
+  &__half {
+    max-width: 50%;
+
+    @media (max-width: 671px) {
+      max-width: 100%;
+    }
+  }
+
+  &__alert {
+    max-width: 100%;
+  }
+
+  &__tiles {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-06);
+
+    .cds--tile {
+      width: 100%;
+    }
+  }
+
+  &__tile {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-05);
+  }
+
+  &__tile-icons {
+    display: flex;
+    gap: var(--spacing-04);
+    color: var(--text-primary);
+  }
+
+  &__tile-title {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-03);
+  }
+
+  &__tile-text {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-03);
+    margin-top: var(--spacing-07);
+    padding-top: var(--spacing-05);
+    border-top: 1px solid var(--interactive-primary);
+
+    @media (max-width: 671px) {
+      flex-direction: column-reverse;
+
+      .cds--btn {
+        width: 100%;
+        max-width: none;
+      }
+    }
+  }
+}

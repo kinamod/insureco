@@ -287,3 +287,11 @@ When testing the sign-up flow:
 - **Exit**: Final submission navigates to `/dashboard`
 - **Layout**: Wrapped by `Layout.jsx` (header, theme toggle visible)
 - **Routing**: Defined in `App.jsx` routes
+
+## Current Implementation (Figma "Web App - Sign Up", node 11147-17281)
+
+- Page: `src/pages/SignUpPage.jsx` + `SignUpPage.scss` (replaced the `SignUpComingSoon` placeholder; route `/signup` in `App.jsx`).
+- Steps: Personal Info -> Address -> Insurance Type -> Car Info (car/both) -> Home Info (home/both). Progress uses the custom `StepBreadcrumb` (Carbon `ProgressIndicator` is banned). The last visible step submits and navigates to `/dashboard`.
+- No coverage-preferences or review steps exist in the Figma design, so they are not implemented.
+- Car step shows a dismissible warning `InlineNotification` and a Cancel button (back to `/`).
+- Uses only global tokens; the header banner uses `--color-brand-red-60` with `--text-on-color`.
