@@ -59,11 +59,76 @@ const REQUIRED_FIELDS = {
   home: ['homeType', 'homeYear'],
 };
 
+const NAME_PATTERN = /^[A-Za-z][A-Za-z '’-]*$/;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
+const MIN_AGE = 18;
+
+function parseDate(str) {
+  const match = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(str.trim());
+  if (!match) return null;
+  const [, m, d, y] = match.map(Number);
+  const date = new Date(y, m - 1, d);
+  if (date.getFullYear() !== y || date.getMonth() !== m - 1 || date.getDate() !== d) return null;
+  return date;
+}
+
+function formatPhone(value) {
+  const digits = value.replace(/\D/g, '').slice(0, 10);
+  if (digits.length < 4) return digits;
+  if (digits.length < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
+
+function validateName(label, value) {
+  const v = value.trim();
+  if (!v) return `${label} is required`;
+  if (v.length < 2) return `${label} must be at least 2 characters`;
+  if (!NAME_PATTERN.test(v)) return `${label} can only contain letters, spaces, hyphens and apostrophes`;
+  return '';
+}
+
+function validatePersonal(data) {
+  const errors = {
+    firstName: validateName('First name', data.firstName),
+    lastName: validateName('Last name', data.lastName),
+    email: '',
+    phone: '',
+    dateOfBirth: '',
+  };
+
+  const email = data.email.trim();
+  if (!email) errors.email = 'Email address is required';
+  else if (!EMAIL_PATTERN.test(email)) errors.email = 'Enter a valid email address, e.g. name@example.com';
+
+  const phoneDigits = data.phone.replace(/\D/g, '');
+  if (!phoneDigits) errors.phone = 'Phone number is required';
+  else if (phoneDigits.length !== 10) errors.phone = 'Enter a 10-digit phone number, e.g. (555) 123-4567';
+
+  if (!data.dateOfBirth.trim()) {
+    errors.dateOfBirth = 'Date of birth is required';
+  } else {
+    const dob = parseDate(data.dateOfBirth);
+    const today = new Date();
+    if (!dob) {
+      errors.dateOfBirth = 'Enter a valid date in mm/dd/yyyy format';
+    } else if (dob > today) {
+      errors.dateOfBirth = 'Date of birth cannot be in the future';
+    } else if (dob < new Date(today.getFullYear() - 120, today.getMonth(), today.getDate())) {
+      errors.dateOfBirth = 'Enter a valid date of birth';
+    } else if (dob > new Date(today.getFullYear() - MIN_AGE, today.getMonth(), today.getDate())) {
+      errors.dateOfBirth = `You must be at least ${MIN_AGE} years old to sign up`;
+    }
+  }
+  return errors;
+}
+
 export default function SignUpPage() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState(INITIAL_DATA);
   const [showWarning, setShowWarning] = useState(true);
+  const [touched, setTouched] = useState({});
+  const [attemptedNext, setAttemptedNext] = useState(false);
 
   const steps = useMemo(() => {
     const list = [
@@ -82,19 +147,29 @@ export default function SignUpPage() {
 
   const stepKey = steps[currentStep].key;
   const isLastStep = currentStep === steps.length - 1;
-  const isValid = REQUIRED_FIELDS[stepKey].every((field) => String(formData[field]).trim() !== '');
+  const personalErrors = useMemo(() => validatePersonal(formData), [formData]);
+  const isValid =
+    stepKey === 'personal'
+      ? Object.values(personalErrors).every((e) => !e)
+      : REQUIRED_FIELDS[stepKey].every((field) => String(formData[field]).trim() !== '');
+  const fieldError = (field) => (touched[field] || attemptedNext ? personalErrors[field] : '');
+  const touch = (field) => () => setTouched((prev) => ({ ...prev, [field]: true }));
 
   const update = (field, value) => setFormData((prev) => ({ ...prev, [field]: value }));
   const onText = (field) => (e) => update(field, e.target.value);
   const onNumber = (field) => (e, { value }) => update(field, value);
 
   const goTo = (index) => {
+    setAttemptedNext(false);
     setCurrentStep(index);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleNext = () => {
-    if (!isValid) return;
+    if (!isValid) {
+      setAttemptedNext(true);
+      return;
+    }
     if (isLastStep) {
       console.log('Sign up submitted', formData);
       navigate('/dashboard');
@@ -108,17 +183,26 @@ export default function SignUpPage() {
       case 'personal':
         return (
           <Stack gap={6}>
-            <TextInput id="firstName" labelText="First Name" placeholder="Enter your first name" value={formData.firstName} onChange={onText('firstName')} />
-            <TextInput id="lastName" labelText="Last Name" placeholder="Enter your last name" value={formData.lastName} onChange={onText('lastName')} />
-            <TextInput id="email" type="email" labelText="Email Address" placeholder="your.email@example.com" value={formData.email} onChange={onText('email')} />
-            <TextInput id="phone" type="tel" labelText="Phone Number" placeholder="(555) 123-4567" value={formData.phone} onChange={onText('phone')} />
+            <TextInput id="firstName" labelText="First Name" placeholder="Enter your first name" autoComplete="given-name" maxLength={50} value={formData.firstName} onChange={onText('firstName')} onBlur={touch('firstName')} invalid={!!fieldError('firstName')} invalidText={fieldError('firstName')} />
+            <TextInput id="lastName" labelText="Last Name" placeholder="Enter your last name" autoComplete="family-name" maxLength={50} value={formData.lastName} onChange={onText('lastName')} onBlur={touch('lastName')} invalid={!!fieldError('lastName')} invalidText={fieldError('lastName')} />
+            <TextInput id="email" type="email" labelText="Email Address" placeholder="your.email@example.com" autoComplete="email" value={formData.email} onChange={onText('email')} onBlur={touch('email')} invalid={!!fieldError('email')} invalidText={fieldError('email')} />
+            <TextInput id="phone" type="tel" labelText="Phone Number" placeholder="(555) 123-4567" autoComplete="tel" value={formData.phone} onChange={(e) => update('phone', formatPhone(e.target.value))} onBlur={touch('phone')} invalid={!!fieldError('phone')} invalidText={fieldError('phone')} />
             <DatePicker
               datePickerType="single"
               dateFormat="m/d/Y"
-              value={formData.dateOfBirth}
+              maxDate={new Date()}
               onChange={(dates, str) => update('dateOfBirth', str)}
+              onClose={touch('dateOfBirth')}
             >
-              <DatePickerInput id="dateOfBirth" labelText="Date of Birth" placeholder="mm/dd/yyyy" />
+              <DatePickerInput
+                id="dateOfBirth"
+                labelText="Date of Birth"
+                placeholder="mm/dd/yyyy"
+                onChange={(e) => update('dateOfBirth', e.target.value)}
+                onBlur={touch('dateOfBirth')}
+                invalid={!!fieldError('dateOfBirth')}
+                invalidText={fieldError('dateOfBirth')}
+              />
             </DatePicker>
           </Stack>
         );
@@ -264,7 +348,7 @@ export default function SignUpPage() {
                 Back
               </Button>
             )}
-            <Button kind="primary" renderIcon={isLastStep ? Checkmark : ArrowRight} disabled={!isValid} onClick={handleNext}>
+            <Button kind="primary" renderIcon={isLastStep ? Checkmark : ArrowRight} disabled={!isValid && stepKey !== 'personal'} onClick={handleNext}>
               {isLastStep ? 'Complete' : 'Next'}
             </Button>
           </div>
